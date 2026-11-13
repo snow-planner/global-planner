@@ -12,6 +12,17 @@ export const SRC = {
 const OFFICE = '유학생서비스팀 · 2026-2학기'
 const OFFICE_GRAD = '학사팀 · 유학생서비스팀 · 2026-2학기'
 
+export const mockChecklist: ChecklistItem[] = [
+  { id: 's1', category: 'stay', text: 'Check the D-2 expiry date on your residence card', ko: '외국인등록증', due: 'Now', source: '비자 및 체류 > 유학(D-2) 비자 연장 · 유학생서비스팀', urgent: true },
+  { id: 's2', category: 'stay', text: 'Prepare extension documents and confirm them with the office', ko: '유학(D-2) 비자 연장', due: '4 months before expiry', source: '비자 및 체류 > 유학(D-2) 비자 연장 · final review: 출입국·외국인관서', urgent: true },
+  { id: 'a1', category: 'academics', text: 'Check which required courses you have completed', ko: '외국인 필수 과목', due: 'Before registration', source: '학업 > 수강신청 및 수강 과목 > 외국인 필수 과목 · 유학생서비스팀', urgent: false },
+  { id: 'a2', category: 'academics', text: 'Plan at least 12 credits, excluding P/F courses', ko: '필수 학점', due: 'This semester', source: '학업 > 수강신청 및 수강 과목 > 필수 학점 · 유학생서비스팀', urgent: false },
+  { id: 'a3', category: 'academics', text: 'Prepare for TOPIK 4, the Korean-track graduation requirement', ko: '졸업 요건', due: 'Before graduation', source: '학업 > 학적 변동 > 졸업 · 학사팀, 유학생서비스팀', urgent: false },
+  { id: 'c1', category: 'scholarship', text: 'Complete Korean Life and Laws Education', ko: '한국생활법령교육', due: 'Announced period', source: '학업 > 외국인유학생 필수교육 · 유학생서비스팀', urgent: true },
+  { id: 'c2', category: 'scholarship', text: 'Complete Sexual Violence Prevention Education', ko: '성폭력예방교육', due: 'Announced period', source: '학업 > 외국인유학생 필수교육 · 유학생서비스팀', urgent: true },
+  { id: 'c3', category: 'scholarship', text: 'Check scholarship criteria against last semester’s GPA and TOPIK level', ko: '외국인 유학생 장학금(학부)', due: 'Before next semester', source: '캠퍼스생활 > 장학금 > 학부 · 유학생서비스팀', urgent: false },
+]
+
 export const mockPlans: Record<ViewLang, Plan> = {
   en: {
     mustDos: [
@@ -38,6 +49,7 @@ export const mockPlans: Record<ViewLang, Plan> = {
       'The 2026 TOPIK application periods in our guide have passed. Check the next test schedule.',
       'D-2 extension documents can differ by case. Confirm with 유학생서비스팀 or the immigration office (출입국·외국인관서).',
     ],
+    checklist: mockChecklist,
   },
   ko: {
     mustDos: [
@@ -64,16 +76,6 @@ export const mockPlans: Record<ViewLang, Plan> = {
       '자료에 안내된 2026년 TOPIK 접수 기간은 지났어요. 다음 시험 일정을 확인하세요.',
       'D-2 연장 서류는 개인 상황에 따라 다를 수 있어요. 유학생서비스팀 또는 관할 출입국·외국인관서에 확인하세요.',
     ],
+    checklist: mockChecklist,
   },
 }
-
-export const mockChecklist: ChecklistItem[] = [
-  { id: 's1', category: 'stay', text: 'Check the D-2 expiry date on your residence card', ko: '외국인등록증', due: 'Now', source: '비자 및 체류 > 유학(D-2) 비자 연장 · 유학생서비스팀', urgent: true },
-  { id: 's2', category: 'stay', text: 'Prepare extension documents and confirm them with the office', ko: '유학(D-2) 비자 연장', due: '4 months before expiry', source: '비자 및 체류 > 유학(D-2) 비자 연장 · final review: 출입국·외국인관서', urgent: true },
-  { id: 'a1', category: 'academics', text: 'Check which required courses you have completed', ko: '외국인 필수 과목', due: 'Before registration', source: '학업 > 수강신청 및 수강 과목 > 외국인 필수 과목 · 유학생서비스팀', urgent: false },
-  { id: 'a2', category: 'academics', text: 'Plan at least 12 credits, excluding P/F courses', ko: '필수 학점', due: 'This semester', source: '학업 > 수강신청 및 수강 과목 > 필수 학점 · 유학생서비스팀', urgent: false },
-  { id: 'a3', category: 'academics', text: 'Prepare for TOPIK 4, the Korean-track graduation requirement', ko: '졸업 요건', due: 'Before graduation', source: '학업 > 학적 변동 > 졸업 · 학사팀, 유학생서비스팀', urgent: false },
-  { id: 'c1', category: 'scholarship', text: 'Complete Korean Life and Laws Education', ko: '한국생활법령교육', due: 'Announced period', source: '학업 > 외국인유학생 필수교육 · 유학생서비스팀', urgent: true },
-  { id: 'c2', category: 'scholarship', text: 'Complete Sexual Violence Prevention Education', ko: '성폭력예방교육', due: 'Announced period', source: '학업 > 외국인유학생 필수교육 · 유학생서비스팀', urgent: true },
-  { id: 'c3', category: 'scholarship', text: 'Check scholarship criteria against last semester’s GPA and TOPIK level', ko: '외국인 유학생 장학금(학부)', due: 'Before next semester', source: '캠퍼스생활 > 장학금 > 학부 · 유학생서비스팀', urgent: false },
-]

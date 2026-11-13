@@ -4,7 +4,7 @@ import Header from '../components/Header'
 import ChatPanel from '../components/ChatPanel'
 import { useLocalStorage } from '../hooks/useLocalStorage'
 import { formatDate, getDday } from '../utils/dday'
-import { getChecklist, getPlan } from '../services/planner'
+import { getPlan, type PlanSource } from '../services/planner'
 import { defaultChecklistDone, defaultConditions, STORAGE_KEYS } from '../constants'
 import type { ChatAction, Conditions, Plan, Tab, ViewLang } from '../types'
 
@@ -22,6 +22,7 @@ const EN = {
   openList: 'Open checklist →',
   plan: 'Semester plan · 학기별 계획표',
   updated: 'Updated from chat',
+  sample: 'Sample data',
   tabThis: 'This semester · 2026 Fall',
   tabNext: 'Next semester · 2027 Spring',
   hWhen: 'Timing',
@@ -47,6 +48,7 @@ const KO: typeof EN = {
   openList: '체크리스트 열기 →',
   plan: '학기별 필수 요건 계획표',
   updated: '대화로 업데이트됨',
+  sample: '예시 데이터',
   tabThis: '이번 학기 · 2026-2학기',
   tabNext: '다음 학기 · 2027-1학기',
   hWhen: '시기',
@@ -77,12 +79,16 @@ export default function PlannerPage() {
   const [lang, setLang] = useState<ViewLang>(conditions.lang === 'ko' ? 'ko' : 'en')
   const [tab, setTab] = useState<Tab>('this')
   const [plan, setPlan] = useState<Plan | null>(null)
+  const [source, setSource] = useState<PlanSource>('live')
   const [updated, setUpdated] = useState(false)
 
   useEffect(() => {
     let alive = true
-    getPlan(conditions, lang).then((p) => {
-      if (alive) setPlan(p)
+    setPlan(null) // 새 계획을 받는 동안(최대 수십 초) 로딩 문구를 보여 줘요
+    getPlan(conditions, lang).then((r) => {
+      if (!alive) return
+      setPlan(r.plan)
+      setSource(r.source)
     })
     return () => {
       alive = false
@@ -93,9 +99,9 @@ export default function PlannerPage() {
   const chips = conditionChips(conditions, lang)
   const [summary] = useState(() => `${conditionChips(conditions, lang).join(' · ')} — ${L.ask}`)
 
-  const checklist = getChecklist()
+  const checklist = plan?.checklist ?? []
   const doneCount = checklist.filter((i) => done[i.id]).length
-  const pct = Math.round((doneCount / checklist.length) * 100)
+  const pct = checklist.length ? Math.round((doneCount / checklist.length) * 100) : 0
 
   const showDday = conditions.visa === 'd2' && conditions.visaExpiry
   const dday = showDday ? getDday(conditions.visaExpiry) : null
@@ -178,6 +184,7 @@ export default function PlannerPage() {
             <div className="flex flex-wrap items-center justify-between gap-3">
               <div className="flex flex-wrap items-center gap-2.5">
                 <h2 className="text-xl font-bold">{L.plan}</h2>
+                {plan && source === 'fallback' && <span className="rounded-full bg-gray-100 px-2.5 py-1 text-[13px] font-medium text-gray-600">{L.sample}</span>}
                 {updated && <span className="rounded-full bg-[#E7F6EC] px-2.5 py-1 text-[13px] font-medium text-[#146C2E]">{L.updated}</span>}
               </div>
               <div className="flex gap-1.5 rounded-xl bg-gray-100 p-1">

@@ -26,6 +26,7 @@ export interface Plan {
   mustDos: string[]
   thisSemester: PlanRow[]
   nextSemester: PlanRow[]
+  checklist: ChecklistItem[]
   needsConfirmation: string[]
 }
 

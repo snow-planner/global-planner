@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import Header from '../components/Header'
 import { useLocalStorage } from '../hooks/useLocalStorage'
@@ -12,11 +13,11 @@ const groups: { id: ChecklistItem['category']; title: string; ko: string; note?:
 ]
 
 export default function ChecklistPage() {
-  const items = getChecklist()
+  const [items] = useState(getChecklist)
   const [done, setDone] = useLocalStorage<Record<string, boolean>>(STORAGE_KEYS.checklist, defaultChecklistDone)
 
   const doneCount = items.filter((i) => done[i.id]).length
-  const pct = Math.round((doneCount / items.length) * 100)
+  const pct = items.length ? Math.round((doneCount / items.length) * 100) : 0
   const toggle = (id: string) => setDone((prev) => ({ ...prev, [id]: !prev[id] }))
 
   return (

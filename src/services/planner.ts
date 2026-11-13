@@ -58,9 +58,68 @@ function replyLanguage(history: ChatMessage[], conditions: Conditions) {
   return LANG_NAMES[conditions.lang]
 }
 
-export async function getPlan(_conditions: Conditions, lang: ViewLang): Promise<Plan> {
-  await wait(500)
-  return mockPlans[lang] // The plan is still mock data (replace with api/plan.ts later)
+export type PlanSource = 'live' | 'cache' | 'fallback'
+
+const PLAN_CACHE_PREFIX = 'snow-planner:plan:'
+const PLAN_LATEST_KEY = 'snow-planner:plan:latest'
+
+function readPlan(key: string): Plan | null {
+  try {
+    const raw = localStorage.getItem(key)
+    return raw ? (JSON.parse(raw) as Plan) : null
+  } catch {
+    return null
+  }
+}
+
+function writePlan(key: string, plan: Plan) {
+  try {
+    localStorage.setItem(key, JSON.stringify(plan))
+  } catch {
+    // 저장 공간이 없거나 막혀 있어도 화면은 그대로 보여 줘요
+  }
+}
+
+function planLanguage(conditions: Conditions, lang: ViewLang) {
+  if (lang === 'ko') return 'Korean'
+  if (conditions.lang === 'ko') return 'English'
+  return LANG_NAMES[conditions.lang]
+}
+
+export async function getPlan(conditions: Conditions, lang: ViewLang): Promise<{ plan: Plan; source: PlanSource }> {
+  if (USE_MOCK) {
+    await wait(500)
+    return { plan: mockPlans[lang], source: 'live' } // 목업 모드에서는 "예시 데이터" 배지를 띄우지 않아요
+  }
+
+  const language = planLanguage(conditions, lang)
+  const cacheKey = PLAN_CACHE_PREFIX + JSON.stringify({ conditions, language })
+
+  const cached = readPlan(cacheKey)
+  if (cached) {
+    writePlan(PLAN_LATEST_KEY, cached)
+    return { plan: cached, source: 'cache' }
+  }
+
+  try {
+    const res = await fetch('/api/plan', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-demo-code': getAccessCode(),
+      },
+      body: JSON.stringify({ conditionsText: conditionsText(conditions), language }),
+    })
+    if (!res.ok) throw new Error(String(res.status))
+
+    const data = await res.json()
+    const plan = data.plan as Plan
+    writePlan(cacheKey, plan)
+    writePlan(PLAN_LATEST_KEY, plan)
+    return { plan, source: 'live' }
+  } catch {
+    return { plan: mockPlans[lang], source: 'fallback' }
+  }
 }
 
 export async function sendMessage(history: ChatMessage[], lang: ViewLang, conditions: Conditions): Promise<ChatReply> {
@@ -113,5 +172,6 @@ export function isMockMode() {
 }
 
 export function getChecklist(): ChecklistItem[] {
-  return mockChecklist
+  const latest = readPlan(PLAN_LATEST_KEY)
+  return Array.isArray(latest?.checklist) ? latest.checklist : mockChecklist
 }
