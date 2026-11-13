@@ -1,6 +1,6 @@
 import type { ChatReply, ChecklistItem, Conditions, Plan, ViewLang } from '../types'
 import { mockChecklist, mockPlans } from '../mock/plan'
-import { mockReply } from '../mock/chat'
+import { mockReply } from '../mock/mockChat'
 
 const wait = (ms: number) => new Promise((r) => setTimeout(r, ms))
 
