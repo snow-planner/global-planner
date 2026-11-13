@@ -23,7 +23,7 @@ function conditionsText(c: Conditions) {
     `- Korean level: ${c.topik === '0' ? 'No TOPIK' : `TOPIK ${c.topik}`}`,
     `- Entry: ${c.entry === 'after' ? 'From September 2025 onward' : 'Before September 2025'}`,
     `- Course track: ${c.track === 'korean' ? 'Korean track' : 'English track'}`,
-    `- Answer language: ${LANG_NAMES[c.lang]}`,
+    `- Preferred language: ${LANG_NAMES[c.lang]} (use only if my question's language is unclear)`,
     'Use these conditions. Do not ask me for them again.',
   ].join('\n')
 }
@@ -45,12 +45,20 @@ export async function sendMessage(history: ChatMessage[], lang: ViewLang, condit
   const real = history.filter((m) => !m.local).map((m) => ({ ...m }))
   if (real.length > 0) {
     real[0].text = `${conditionsText(conditions)}\n\n${real[0].text}`
+
+    // 마지막 질문에 답변 언어 지시를 붙여요 (화면에는 안 보임)
+    const lastIdx = real.length - 1
+    real[lastIdx].text +=
+      '\n\n[Reply in the same language as this message. Keep official Korean terms in Korean in parentheses.]'
   }
 
   try {
     const res = await fetch('/api/chat', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        'x-demo-code': localStorage.getItem('snow-planner:code') ?? '',
+      },
       body: JSON.stringify({ messages: real }),
     })
     if (!res.ok) throw new Error(String(res.status))

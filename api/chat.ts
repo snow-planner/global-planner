@@ -10,7 +10,15 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return res.status(405).json({ error: 'Method not allowed' })
   }
 
-  const { SNOWCHAT_ENDPOINT, SNOWCHAT_API_KEY } = process.env
+  const { SNOWCHAT_ENDPOINT, SNOWCHAT_API_KEY, DEMO_ACCESS_CODE } = process.env
+    if (!SNOWCHAT_ENDPOINT || !SNOWCHAT_API_KEY) {
+    return res.status(500).json({ error: 'Server is not configured' })
+    }
+
+    // 접근 코드가 설정돼 있으면, 코드가 맞는 요청만 통과
+    if (DEMO_ACCESS_CODE && req.headers['x-demo-code'] !== DEMO_ACCESS_CODE) {
+    return res.status(401).json({ error: 'Invalid access code' })
+    }
   if (!SNOWCHAT_ENDPOINT || !SNOWCHAT_API_KEY) {
     return res.status(500).json({ error: 'Server is not configured' })
   }
