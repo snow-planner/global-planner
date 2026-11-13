@@ -1,29 +1,20 @@
-import type { Conditions, Plan } from '../types'
-import { mockPlan } from '../mock/plan'
-import { mockReply, type ChatReply } from '../mock/chat'
+import type { ChatReply, ChecklistItem, Conditions, Plan, ViewLang } from '../types'
+import { mockChecklist, mockPlans } from '../mock/plan'
+import { mockReply } from '../mock/chat'
 
-const USE_MOCK = true
 const wait = (ms: number) => new Promise((r) => setTimeout(r, ms))
 
-export async function getPlan(conditions: Conditions): Promise<Plan> {
-  if (USE_MOCK) {
-    await wait(800) // 로딩 화면 확인용
-    return mockPlan
-  }
-  // 나중에: 백엔드 호출
-  const res = await fetch('/api/plan', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(conditions),
-  })
-  return res.json()
+// 나중에 API 연결할 때 이 파일만 바꾸면 돼요
+export async function getPlan(_conditions: Conditions, lang: ViewLang): Promise<Plan> {
+  await wait(500)
+  return mockPlans[lang]
 }
 
-export async function sendMessage(text: string): Promise<ChatReply> {
-  if (USE_MOCK) {
-    await wait(600)
-    return mockReply(text)
-  }
-  // 나중에: 백엔드 호출
-  throw new Error('not implemented')
+export async function sendMessage(text: string, lang: ViewLang): Promise<ChatReply> {
+  await wait(600)
+  return mockReply(text, lang)
+}
+
+export function getChecklist(): ChecklistItem[] {
+  return mockChecklist
 }

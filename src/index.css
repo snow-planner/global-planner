@@ -1,1 +1,14 @@
 @import "tailwindcss";
+
+@theme {
+  --font-sans: "Noto Sans KR", system-ui, sans-serif;
+  --color-brand: #2647B8;
+  --color-brand-dark: #1B3489;
+  --color-brand-soft: #EEF2FD;
+}
+
+body {
+  margin: 0;
+  background: #F6F7F9;
+  color: #111827;
+}

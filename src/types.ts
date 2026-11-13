@@ -1,15 +1,18 @@
-export type Lang = 'en' | 'ko'
+export type Lang = 'en' | 'ko' | 'zh' | 'vi' | 'my' | 'mn'
+export type ViewLang = 'en' | 'ko'
 export type Visa = 'd2' | 'other' | 'none'
+export type Tab = 'this' | 'next'
 
 export interface Conditions {
   lang: Lang
-  year: 1 | 2 | 3 | 4
+  status: 'ug' | 'grad' | 'exchange' | 'lang'
+  year: string
   major: string
-  visa: Visa
-  topik: number
+  topik: string
   entry: 'before' | 'after'
   track: 'korean' | 'english'
-  visaExpiry?: string // 'YYYY-MM-DD', 기기에만 저장
+  visa: Visa
+  visaExpiry: string // YYYY-MM-DD, 이 기기에만 저장
 }
 
 export interface PlanRow {
@@ -19,6 +22,13 @@ export interface PlanRow {
   office: string
 }
 
+export interface Plan {
+  mustDos: string[]
+  thisSemester: PlanRow[]
+  nextSemester: PlanRow[]
+  needsConfirmation: string[]
+}
+
 export interface ChecklistItem {
   id: string
   category: 'stay' | 'academics' | 'scholarship'
@@ -26,11 +36,21 @@ export interface ChecklistItem {
   ko: string
   due: string
   source: string
+  urgent: boolean
 }
 
-export interface Plan {
-  thisSemester: PlanRow[]
-  nextSemester: PlanRow[]
-  checklist: ChecklistItem[]
-  needsConfirmation: string[]
+export type ChatAction =
+  | { type: 'setTab'; tab: Tab }
+  | { type: 'setLang'; lang: ViewLang }
+
+export interface ChatReply {
+  text: string
+  source?: string
+  action?: ChatAction
+}
+
+export interface ChatMessage {
+  role: 'user' | 'bot'
+  text: string
+  source?: string
 }
