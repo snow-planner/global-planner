@@ -1,29 +1,45 @@
 import { useState, type FormEvent } from 'react'
+import ReactMarkdown from 'react-markdown'
+import remarkGfm from 'remark-gfm'
 import { isMockMode, sendMessage } from '../services/planner'
-import type { ChatAction, ChatMessage, ViewLang } from '../types'
+import type { ChatAction, ChatMessage, Conditions, ViewLang } from '../types'
 
 interface Props {
   lang: ViewLang
   summary: string
+  conditions: Conditions
   onAction: (action?: ChatAction) => void
 }
 
-export default function ChatPanel({ lang, summary, onAction }: Props) {
+export default function ChatPanel({ lang, summary, conditions, onAction }: Props) {
   const ko = lang === 'ko'
   const mock = isMockMode()
 
-  const [messages, setMessages] = useState<ChatMessage[]>(() => [
-    { role: 'user', text: summary },
-    {
-      role: 'bot',
-      text: ko
-        ? '2026-2학기 계획을 만들었어요. 모든 항목을 왼쪽 계획표와 체크리스트에 넣었고, 확인이 필요한 것이 3가지 있어요.'
-        : 'Here is your plan for 2026 Fall. I put every item into the plan and checklist on the left. Three things need your confirmation.',
-      source: ko
-        ? '근거: 유학생서비스팀 사이트 (학업 · 비자 및 체류 · 장학금) · 2026-2학기'
-        : 'Sources: 유학생서비스팀 사이트 (학업 · 비자 및 체류 · 장학금) · 2026-2학기',
-    },
-  ])
+  const [messages, setMessages] = useState<ChatMessage[]>(() =>
+    mock
+      ? [
+          { role: 'user', text: summary, local: true },
+          {
+            role: 'bot',
+            local: true,
+            text: ko
+              ? '2026-2학기 계획을 만들었어요. 모든 항목을 왼쪽 계획표와 체크리스트에 넣었고, 확인이 필요한 것이 3가지 있어요.'
+              : 'Here is your plan for 2026 Fall. I put every item into the plan and checklist on the left. Three things need your confirmation.',
+            source: ko
+              ? '근거: 유학생서비스팀 사이트 (학업 · 비자 및 체류 · 장학금) · 2026-2학기'
+              : 'Sources: 유학생서비스팀 사이트 (학업 · 비자 및 체류 · 장학금) · 2026-2학기',
+          },
+        ]
+      : [
+          {
+            role: 'bot',
+            local: true,
+            text: ko
+              ? '입력한 조건으로 답해 드릴게요. 학업, 체류, 장학에 대해 궁금한 걸 물어보세요.'
+              : 'I will answer based on the conditions you entered. Ask me anything about academics, stay, or scholarships.',
+          },
+        ],
+  )
   const [draft, setDraft] = useState('')
   const [sending, setSending] = useState(false)
 
@@ -38,7 +54,7 @@ export default function ChatPanel({ lang, summary, onAction }: Props) {
     setMessages(history)
     setDraft('')
     setSending(true)
-    const reply = await sendMessage(history, lang)
+    const reply = await sendMessage(history, lang, conditions)
     setMessages((prev) => [...prev, { role: 'bot', text: reply.text, source: reply.source }])
     setSending(false)
     onAction(reply.action)
@@ -65,14 +81,25 @@ export default function ChatPanel({ lang, summary, onAction }: Props) {
         {messages.map((m, i) =>
           m.role === 'user' ? (
             <div key={i} className="flex flex-col items-end">
-              <div className="max-w-[85%] rounded-[14px_14px_4px_14px] bg-brand px-3.5 py-2.5 text-sm leading-relaxed text-white">
+              <div className="max-w-[85%] whitespace-pre-wrap rounded-[14px_14px_4px_14px] bg-brand px-3.5 py-2.5 text-sm leading-relaxed text-white">
                 {m.text}
               </div>
             </div>
           ) : (
             <div key={i} className="flex flex-col items-start gap-1">
-              <div className="max-w-[90%] whitespace-pre-wrap rounded-[14px_14px_14px_4px] bg-gray-100 px-3.5 py-2.5 text-sm leading-relaxed">
-                {m.text}
+              <div className="prose prose-sm max-w-[95%] rounded-[14px_14px_14px_4px] bg-gray-100 px-3.5 py-2.5 prose-headings:my-2 prose-headings:text-[15px] prose-p:my-1.5 prose-ul:my-1.5 prose-li:my-0.5 prose-table:text-xs">
+                <ReactMarkdown
+                  remarkPlugins={[remarkGfm]}
+                  components={{
+                    table: ({ children }) => (
+                      <div className="overflow-x-auto">
+                        <table>{children}</table>
+                      </div>
+                    ),
+                  }}
+                >
+                  {m.text}
+                </ReactMarkdown>
               </div>
               {m.source && <p className="text-xs leading-relaxed text-gray-600">{m.source}</p>}
             </div>

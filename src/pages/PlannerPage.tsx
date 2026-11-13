@@ -221,7 +221,7 @@ export default function PlannerPage() {
           <p className="text-[13px] leading-relaxed text-gray-600">{L.footer}</p>
         </div>
 
-        <ChatPanel lang={lang} summary={summary} onAction={handleAction} />
+        <ChatPanel lang={lang} summary={summary} conditions={conditions} onAction={handleAction} />
       </main>
     </div>
   )

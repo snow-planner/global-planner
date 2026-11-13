@@ -53,4 +53,5 @@ export interface ChatMessage {
   role: 'user' | 'bot'
   text: string
   source?: string
+  local?: boolean // 화면에만 보이고 API로는 안 보내는 메시지
 }
