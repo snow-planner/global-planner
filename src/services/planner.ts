@@ -28,6 +28,15 @@ function conditionsText(c: Conditions) {
   ].join('\n')
 }
 
+// main.tsx에서 ?code= 로 저장한 접근 코드를 읽어요
+function getAccessCode() {
+  try {
+    return localStorage.getItem('snow-planner:code') ?? ''
+  } catch {
+    return ''
+  }
+}
+
 export async function getPlan(_conditions: Conditions, lang: ViewLang): Promise<Plan> {
   await wait(500)
   return mockPlans[lang] // 계획표는 아직 목업 (나중에 api/plan.ts로 교체)
@@ -57,11 +66,20 @@ export async function sendMessage(history: ChatMessage[], lang: ViewLang, condit
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'x-demo-code': localStorage.getItem('snow-planner:code') ?? '',
+        'x-demo-code': getAccessCode(),
       },
       body: JSON.stringify({ messages: real }),
     })
+
+    if (res.status === 401) {
+      return {
+        text: lang === 'ko'
+          ? '접근 코드가 없어서 답변할 수 없어요. 받은 링크(?code=...)로 다시 들어와 주세요.'
+          : 'An access code is required. Please open the link you received (with ?code=...).',
+      }
+    }
     if (!res.ok) throw new Error(String(res.status))
+
     const data = await res.json()
     return { text: data.text }
   } catch {
