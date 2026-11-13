@@ -115,8 +115,8 @@ export default function PlannerPage() {
   return (
     <div className="min-h-screen">
       <Header />
-      <main className="mx-auto flex max-w-[1240px] flex-wrap items-start gap-6 px-6 pb-16 pt-8">
-        <div className="flex min-w-0 flex-[999_1_560px] flex-col gap-5">
+      <main className="mx-auto grid max-w-[1440px] grid-cols-1 items-start gap-6 px-6 pb-16 pt-8 lg:grid-cols-2">
+        <div className="flex min-w-0 flex-col gap-5">
           <div className="flex flex-wrap items-end justify-between gap-4">
             <div className="flex flex-col gap-2">
               <p className="text-sm font-medium text-brand">{L.step}</p>
@@ -130,40 +130,47 @@ export default function PlannerPage() {
             <Link to="/" className="inline-flex min-h-11 items-center rounded-[10px] border border-gray-300 bg-white px-4 text-sm text-gray-700">{L.edit}</Link>
           </div>
 
-          <section aria-label="Overview" className="grid grid-cols-[repeat(auto-fit,minmax(220px,1fr))] gap-4">
-            <div className="flex flex-col gap-2 rounded-2xl border border-gray-200 bg-white p-5">
-              <p className="text-sm font-medium text-gray-600">{L.visa}</p>
+          <section aria-label="Overview" className="flex flex-col rounded-2xl border border-gray-200 bg-white">
+            <div className="flex flex-col gap-5 p-5 sm:flex-row sm:items-start sm:justify-between">
               {dday ? (
-                <>
-                  <p className="text-[40px] font-bold leading-tight">D-{dday.daysLeft}</p>
-                  <p className="text-[13px] text-gray-600">{L.expires(formatDate(dday.end, lang))}</p>
-                  {dday.windowOpen ? (
-                    <p className="self-start rounded-full bg-[#FFF4E5] px-3 py-1.5 text-[13px] font-medium text-[#9A3F07]">{L.open}</p>
-                  ) : (
-                    <p className="self-start rounded-full bg-gray-100 px-3 py-1.5 text-[13px] font-medium text-gray-700">{L.opens(formatDate(dday.opens, lang))}</p>
-                  )}
-                </>
+                <div className="flex items-start gap-4">
+                  <p className="text-[34px] font-bold leading-none">D-{dday.daysLeft}</p>
+                  <div className="flex flex-col gap-1.5">
+                    <p className="text-sm font-medium text-gray-600">{L.visa}</p>
+                    <p className="text-[13px] text-gray-600">{L.expires(formatDate(dday.end, lang))}</p>
+                    {dday.windowOpen ? (
+                      <p className="self-start rounded-full bg-[#FFF4E5] px-3 py-1 text-[13px] font-medium text-[#9A3F07]">{L.open}</p>
+                    ) : (
+                      <p className="self-start rounded-full bg-gray-100 px-3 py-1 text-[13px] font-medium text-gray-700">{L.opens(formatDate(dday.opens, lang))}</p>
+                    )}
+                  </div>
+                </div>
               ) : (
-                <p className="text-sm leading-relaxed text-gray-600">{L.noVisa}</p>
+                <div className="flex flex-col gap-1.5">
+                  <p className="text-sm font-medium text-gray-600">{L.visa}</p>
+                  <p className="text-sm leading-relaxed text-gray-600">{L.noVisa}</p>
+                </div>
               )}
+
+              <div className="flex flex-col gap-2 sm:w-56 sm:shrink-0">
+                <div className="flex items-baseline justify-between gap-3">
+                  <p className="text-sm font-medium text-gray-600">{L.progress}</p>
+                  <p className="text-lg font-bold">
+                    {doneCount} <span className="text-[13px] font-normal text-gray-600">/ {checklist.length}</span>
+                  </p>
+                </div>
+                <div role="img" aria-label={`${doneCount} of ${checklist.length} tasks done`} className="h-2.5 overflow-hidden rounded-full bg-gray-200">
+                  <div className="h-full bg-brand" style={{ width: `${pct}%` }} />
+                </div>
+                <Link to="/checklist" className="self-end text-sm font-medium text-brand">{L.openList}</Link>
+              </div>
             </div>
 
-            <div className="flex flex-col gap-2.5 rounded-2xl border border-gray-200 bg-white p-5">
+            <div className="flex flex-col gap-2.5 border-t border-gray-200 p-5">
               <p className="text-sm font-medium text-gray-600">{L.must}</p>
               <ol className="flex list-decimal flex-col gap-1.5 pl-5 text-sm leading-relaxed">
                 {plan?.mustDos.map((m) => <li key={m}>{m}</li>)}
               </ol>
-            </div>
-
-            <div className="flex flex-col gap-2.5 rounded-2xl border border-gray-200 bg-white p-5">
-              <p className="text-sm font-medium text-gray-600">{L.progress}</p>
-              <p className="text-[26px] font-bold">
-                {doneCount} <span className="text-[15px] font-normal text-gray-600">/ {checklist.length}</span>
-              </p>
-              <div role="img" aria-label={`${doneCount} of ${checklist.length} tasks done`} className="h-2.5 overflow-hidden rounded-full bg-gray-200">
-                <div className="h-full bg-brand" style={{ width: `${pct}%` }} />
-              </div>
-              <Link to="/checklist" className="mt-auto text-sm font-medium text-brand">{L.openList}</Link>
             </div>
           </section>
 
@@ -180,30 +187,19 @@ export default function PlannerPage() {
             </div>
 
             {plan ? (
-              <div className="overflow-x-auto rounded-xl border border-gray-200">
-                <table className="w-full min-w-[640px] border-collapse text-[15px]">
-                  <thead>
-                    <tr className="bg-gray-50 text-left">
-                      <th scope="col" className="w-[22%] px-4 py-3 text-[13px] font-medium text-gray-600">{L.hWhen}</th>
-                      <th scope="col" className="px-4 py-3 text-[13px] font-medium text-gray-600">{L.hWhat}</th>
-                      <th scope="col" className="w-[30%] px-4 py-3 text-[13px] font-medium text-gray-600">{L.hSource}</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {rows.map((r, i) => (
-                      <tr key={i} className="border-t border-gray-200 align-top">
-                        <td className="px-4 py-3.5 font-medium leading-relaxed">{r.when}</td>
-                        <td className="px-4 py-3.5 leading-relaxed">{r.what}</td>
-                        <td className="px-4 py-3.5 text-[13px] leading-relaxed text-gray-600">
-                          {r.source}
-                          <br />
-                          <span className="font-medium text-brand-dark">{r.office}</span>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
+            <ol aria-label={L.plan} className="flex flex-col divide-y divide-gray-200 rounded-xl border border-gray-200">
+                {rows.map((r, i) => (
+                <li key={i} className="flex flex-col gap-2 p-4">
+                    <span className="self-start rounded-full bg-brand-soft px-2.5 py-1 text-[13px] font-medium text-brand-dark">
+                    {r.when}
+                    </span>
+                    <p className="text-[15px] leading-relaxed">{r.what}</p>
+                    <p className="text-[13px] leading-relaxed text-gray-600">
+                    {r.source} · <span className="font-medium text-brand-dark">{r.office}</span>
+                    </p>
+                </li>
+                ))}
+            </ol>
             ) : (
               <p className="py-10 text-center text-gray-500">{L.loading}</p>
             )}

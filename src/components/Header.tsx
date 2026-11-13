@@ -9,7 +9,7 @@ const links = [
 export default function Header() {
   return (
     <header className="border-b border-gray-200 bg-white">
-      <div className="mx-auto flex max-w-[1240px] flex-wrap items-center justify-between gap-3 px-6 py-3.5">
+      <div className="mx-auto flex max-w-[1440px] flex-wrap items-center justify-between gap-3 px-6 py-3.5">
         <Link to="/" className="flex items-center gap-2.5 text-gray-900">
           <svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true">
             <rect width="32" height="32" rx="8" fill="#2647B8" />

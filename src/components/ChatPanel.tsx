@@ -75,7 +75,7 @@ export default function ChatPanel({ lang, summary, conditions, onAction }: Props
   return (
     <aside
       aria-label="Chat with SNOW Planner"
-      className="flex h-[600px] min-w-0 flex-[1_1_340px] flex-col rounded-2xl border border-gray-200 bg-white lg:sticky lg:top-6 lg:h-[calc(100vh-48px)] lg:max-h-[820px]"
+      className="flex h-[640px] min-w-0 flex-col rounded-2xl border border-gray-200 bg-white lg:sticky lg:top-6 lg:h-[calc(100vh-48px)] lg:max-h-[900px]"
     >
       <div className="flex shrink-0 items-center justify-between gap-2 border-b border-gray-200 px-5 py-4">
         <div className="flex flex-col gap-0.5">
