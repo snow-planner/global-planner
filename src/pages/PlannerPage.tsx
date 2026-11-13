@@ -78,22 +78,23 @@ export default function PlannerPage() {
   const [done] = useLocalStorage<Record<string, boolean>>(STORAGE_KEYS.checklist, defaultChecklistDone)
   const [lang, setLang] = useState<ViewLang>(conditions.lang === 'ko' ? 'ko' : 'en')
   const [tab, setTab] = useState<Tab>('this')
-  const [plan, setPlan] = useState<Plan | null>(null)
-  const [source, setSource] = useState<PlanSource>('live')
+  const [loaded, setLoaded] = useState<{ key: string; plan: Plan; source: PlanSource } | null>(null)
   const [updated, setUpdated] = useState(false)
+  const planKey = JSON.stringify({ conditions, lang })
 
   useEffect(() => {
     let alive = true
-    setPlan(null) // 새 계획을 받는 동안(최대 수십 초) 로딩 문구를 보여 줘요
     getPlan(conditions, lang).then((r) => {
-      if (!alive) return
-      setPlan(r.plan)
-      setSource(r.source)
+      if (alive) setLoaded({ key: planKey, plan: r.plan, source: r.source })
     })
     return () => {
       alive = false
     }
-  }, [conditions, lang])
+  }, [conditions, lang, planKey])
+
+  // 지금 조건·언어로 받은 계획만 보여주고, 아직 안 왔으면 null → 로딩 문구가 떠요
+  const plan = loaded?.key === planKey ? loaded.plan : null
+  const source = loaded?.key === planKey ? loaded.source : null
 
   const L = lang === 'ko' ? KO : EN
   const chips = conditionChips(conditions, lang)
