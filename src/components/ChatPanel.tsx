@@ -1,4 +1,4 @@
-import { useState, type FormEvent } from 'react'
+import { useEffect, useRef, useState, type FormEvent } from 'react'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import { isMockMode, sendMessage } from '../services/planner'
@@ -14,6 +14,7 @@ interface Props {
 export default function ChatPanel({ lang, summary, conditions, onAction }: Props) {
   const ko = lang === 'ko'
   const mock = isMockMode()
+  const logRef = useRef<HTMLDivElement>(null)
 
   const [messages, setMessages] = useState<ChatMessage[]>(() =>
     mock
@@ -43,6 +44,12 @@ export default function ChatPanel({ lang, summary, conditions, onAction }: Props
   const [draft, setDraft] = useState('')
   const [sending, setSending] = useState(false)
 
+  // 새 메시지가 생기면 대화 영역 맨 아래로 스크롤
+  useEffect(() => {
+    const el = logRef.current
+    if (el) el.scrollTo({ top: el.scrollHeight, behavior: 'smooth' })
+  }, [messages, sending])
+
   const suggestions = ko
     ? ['다음 학기는?', 'Show in English', '비자 연장 가능할까요?']
     : ['What about next semester?', '한국어로 보여줘', 'Can I extend my visa?']
@@ -66,8 +73,11 @@ export default function ChatPanel({ lang, summary, conditions, onAction }: Props
   }
 
   return (
-    <aside aria-label="Chat with SNOW Planner" className="flex min-w-0 flex-[1_1_340px] flex-col rounded-2xl border border-gray-200 bg-white">
-      <div className="flex items-center justify-between gap-2 border-b border-gray-200 px-5 py-4">
+    <aside
+      aria-label="Chat with SNOW Planner"
+      className="flex h-[600px] min-w-0 flex-[1_1_340px] flex-col rounded-2xl border border-gray-200 bg-white lg:sticky lg:top-6 lg:h-[calc(100vh-48px)] lg:max-h-[820px]"
+    >
+      <div className="flex shrink-0 items-center justify-between gap-2 border-b border-gray-200 px-5 py-4">
         <div className="flex flex-col gap-0.5">
           <h2 className="text-[17px] font-bold">{ko ? 'SNOW 플래너와 대화' : 'Chat with SNOW Planner'}</h2>
           <p className="text-xs text-gray-600">
@@ -77,7 +87,7 @@ export default function ChatPanel({ lang, summary, conditions, onAction }: Props
         <span className={`h-2.5 w-2.5 rounded-full ${mock ? 'bg-gray-400' : 'bg-[#1F9D55]'}`} aria-hidden="true" />
       </div>
 
-      <div role="log" aria-live="polite" className="flex flex-col gap-3.5 p-5">
+      <div ref={logRef} role="log" aria-live="polite" className="flex min-h-0 flex-1 flex-col gap-3.5 overflow-y-auto p-5">
         {messages.map((m, i) =>
           m.role === 'user' ? (
             <div key={i} className="flex flex-col items-end">
@@ -108,7 +118,7 @@ export default function ChatPanel({ lang, summary, conditions, onAction }: Props
         {sending && <p className="text-sm text-gray-500">{ko ? '답변을 만드는 중…' : 'Thinking…'}</p>}
       </div>
 
-      <div className="mt-auto flex flex-col gap-2.5 px-5 pb-5">
+      <div className="flex shrink-0 flex-col gap-2.5 border-t border-gray-100 px-5 py-4">
         <div className="flex flex-wrap gap-2">
           {suggestions.map((s) => (
             <button
