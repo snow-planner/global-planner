@@ -10,7 +10,6 @@ const LANG_NAMES: Record<Conditions['lang'], string> = {
   en: 'English', ko: 'Korean', zh: 'Chinese', vi: 'Vietnamese', my: 'Burmese', mn: 'Mongolian',
 }
 
-// 조건 입력 화면의 값을 챗봇이 읽을 수 있는 문장으로 바꿔요
 function conditionsText(c: Conditions) {
   const status = { ug: 'Undergraduate', grad: 'Graduate', exchange: 'Exchange student', lang: 'Korean language program' }[c.status]
   const visa = { d2: 'D-2', other: 'Other', none: 'Prefer not to say' }[c.visa]
@@ -28,7 +27,6 @@ function conditionsText(c: Conditions) {
   ].join('\n')
 }
 
-// main.tsx에서 ?code= 로 저장한 접근 코드를 읽어요
 function getAccessCode() {
   try {
     return localStorage.getItem('snow-planner:code') ?? ''
@@ -37,9 +35,28 @@ function getAccessCode() {
   }
 }
 
+function detectLang(text: string): string | null {
+  if (/[\uac00-\ud7a3]/.test(text)) return 'Korean'
+  if (/[\u4e00-\u9fff]/.test(text)) return 'Chinese'
+  if (/[\u1000-\u109f]/.test(text)) return 'Burmese'
+  if (/[\u0400-\u04ff]/.test(text)) return 'Mongolian'
+  if (/[ăâđêôơưạảấầẩẫậắằẳẵặẹẻẽếềểễệỉịọỏốồổỗộớờởỡợụủứừửữựỳỵỷỹ]/i.test(text)) return 'Vietnamese'
+  if (/[a-z]/i.test(text)) return 'English'
+  return null
+}
+
+function replyLanguage(history: ChatMessage[], conditions: Conditions) {
+  const userTexts = history.filter((m) => m.role === 'user' && !m.local).map((m) => m.text)
+  for (let i = userTexts.length - 1; i >= 0; i--) {
+    const found = detectLang(userTexts[i])
+    if (found) return found
+  }
+  return LANG_NAMES[conditions.lang]
+}
+
 export async function getPlan(_conditions: Conditions, lang: ViewLang): Promise<Plan> {
   await wait(500)
-  return mockPlans[lang] // 계획표는 아직 목업 (나중에 api/plan.ts로 교체)
+  return mockPlans[lang] // The plan is still mock data (replace with api/plan.ts later)
 }
 
 export async function sendMessage(history: ChatMessage[], lang: ViewLang, conditions: Conditions): Promise<ChatReply> {
@@ -50,15 +67,13 @@ export async function sendMessage(history: ChatMessage[], lang: ViewLang, condit
     return mockReply(last, lang)
   }
 
-  // 화면용 메시지는 빼고, 첫 질문 앞에 조건을 붙여서 보내요
   const real = history.filter((m) => !m.local).map((m) => ({ ...m }))
   if (real.length > 0) {
     real[0].text = `${conditionsText(conditions)}\n\n${real[0].text}`
 
-    // 마지막 질문에 답변 언어 지시를 붙여요 (화면에는 안 보임)
     const lastIdx = real.length - 1
-    real[lastIdx].text +=
-      '\n\n[Reply in the same language as this message. Keep official Korean terms in Korean in parentheses.]'
+    const replyLang = replyLanguage(history, conditions)
+    real[lastIdx].text += `\n\n[Reply in ${replyLang}. Keep official Korean terms in Korean in parentheses.]`
   }
 
   try {
