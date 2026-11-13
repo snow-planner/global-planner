@@ -64,7 +64,8 @@ const PLAN_CACHE_PREFIX = 'snow-planner:plan:'
 const PLAN_LATEST_KEY = 'snow-planner:plan:latest'
 const CHECKLIST_PREFIX = 'snow-planner:checklist:'
 // 목업·대체 계획의 체크는 실제 계획과 섞이지 않게 따로 저장해요
-export const SAMPLE_CHECKLIST_KEY = CHECKLIST_PREFIX + 'sample'
+const SAMPLE_CACHE_KEY = 'sample'
+export const SAMPLE_CHECKLIST_KEY = CHECKLIST_PREFIX + SAMPLE_CACHE_KEY
 
 interface LatestPlan {
   cacheKey: string
@@ -144,6 +145,8 @@ export async function getPlan(conditions: Conditions, lang: ViewLang): Promise<{
     writeLatest(cacheKey, plan)
     return { plan, source: 'live', checklistKey: CHECKLIST_PREFIX + cacheKey }
   } catch {
+    // 체크리스트 화면도 같은 예시 데이터를 보여 주도록 latest를 바꿔요
+    writeLatest(SAMPLE_CACHE_KEY, mockPlans[lang])
     return { plan: mockPlans[lang], source: 'fallback', checklistKey: SAMPLE_CHECKLIST_KEY }
   }
 }
