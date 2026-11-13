@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import Header from '../components/Header'
 import { useLocalStorage } from '../hooks/useLocalStorage'
 import { getChecklist } from '../services/planner'
-import { defaultChecklistDone, STORAGE_KEYS } from '../constants'
+import { defaultChecklistDone } from '../constants'
 import type { ChecklistItem } from '../types'
 
 const groups: { id: ChecklistItem['category']; title: string; ko: string; note?: string }[] = [
@@ -13,8 +13,8 @@ const groups: { id: ChecklistItem['category']; title: string; ko: string; note?:
 ]
 
 export default function ChecklistPage() {
-  const [items] = useState(getChecklist)
-  const [done, setDone] = useLocalStorage<Record<string, boolean>>(STORAGE_KEYS.checklist, defaultChecklistDone)
+  const [{ items, checklistKey }] = useState(getChecklist)
+  const [done, setDone] = useLocalStorage<Record<string, boolean>>(checklistKey, defaultChecklistDone)
 
   const doneCount = items.filter((i) => done[i.id]).length
   const pct = items.length ? Math.round((doneCount / items.length) * 100) : 0

@@ -62,6 +62,32 @@ export type PlanSource = 'live' | 'cache' | 'fallback'
 
 const PLAN_CACHE_PREFIX = 'snow-planner:plan:'
 const PLAN_LATEST_KEY = 'snow-planner:plan:latest'
+const CHECKLIST_PREFIX = 'snow-planner:checklist:'
+// 목업·대체 계획의 체크는 실제 계획과 섞이지 않게 따로 저장해요
+export const SAMPLE_CHECKLIST_KEY = CHECKLIST_PREFIX + 'sample'
+
+interface LatestPlan {
+  cacheKey: string
+  plan: Plan
+}
+
+function readLatest(): LatestPlan | null {
+  try {
+    const raw = localStorage.getItem(PLAN_LATEST_KEY)
+    const data = raw ? JSON.parse(raw) : null
+    return typeof data?.cacheKey === 'string' && Array.isArray(data?.plan?.checklist) ? data : null
+  } catch {
+    return null
+  }
+}
+
+function writeLatest(cacheKey: string, plan: Plan) {
+  try {
+    localStorage.setItem(PLAN_LATEST_KEY, JSON.stringify({ cacheKey, plan } satisfies LatestPlan))
+  } catch {
+    // 저장 공간이 없거나 막혀 있어도 화면은 그대로 보여 줘요
+  }
+}
 
 function readPlan(key: string): Plan | null {
   try {
@@ -86,10 +112,10 @@ function planLanguage(conditions: Conditions, lang: ViewLang) {
   return LANG_NAMES[conditions.lang]
 }
 
-export async function getPlan(conditions: Conditions, lang: ViewLang): Promise<{ plan: Plan; source: PlanSource }> {
+export async function getPlan(conditions: Conditions, lang: ViewLang): Promise<{ plan: Plan; source: PlanSource; checklistKey: string }> {
   if (USE_MOCK) {
     await wait(500)
-    return { plan: mockPlans[lang], source: 'live' } // 목업 모드에서는 "예시 데이터" 배지를 띄우지 않아요
+    return { plan: mockPlans[lang], source: 'live', checklistKey: SAMPLE_CHECKLIST_KEY } // 목업 모드에서는 "예시 데이터" 배지를 띄우지 않아요
   }
 
   const language = planLanguage(conditions, lang)
@@ -97,8 +123,8 @@ export async function getPlan(conditions: Conditions, lang: ViewLang): Promise<{
 
   const cached = readPlan(cacheKey)
   if (cached) {
-    writePlan(PLAN_LATEST_KEY, cached)
-    return { plan: cached, source: 'cache' }
+    writeLatest(cacheKey, cached)
+    return { plan: cached, source: 'cache', checklistKey: CHECKLIST_PREFIX + cacheKey }
   }
 
   try {
@@ -115,10 +141,10 @@ export async function getPlan(conditions: Conditions, lang: ViewLang): Promise<{
     const data = await res.json()
     const plan = data.plan as Plan
     writePlan(cacheKey, plan)
-    writePlan(PLAN_LATEST_KEY, plan)
-    return { plan, source: 'live' }
+    writeLatest(cacheKey, plan)
+    return { plan, source: 'live', checklistKey: CHECKLIST_PREFIX + cacheKey }
   } catch {
-    return { plan: mockPlans[lang], source: 'fallback' }
+    return { plan: mockPlans[lang], source: 'fallback', checklistKey: SAMPLE_CHECKLIST_KEY }
   }
 }
 
@@ -171,7 +197,9 @@ export function isMockMode() {
   return USE_MOCK
 }
 
-export function getChecklist(): ChecklistItem[] {
-  const latest = readPlan(PLAN_LATEST_KEY)
-  return Array.isArray(latest?.checklist) ? latest.checklist : mockChecklist
+export function getChecklist(): { items: ChecklistItem[]; checklistKey: string } {
+  const latest = readLatest()
+  return latest
+    ? { items: latest.plan.checklist, checklistKey: CHECKLIST_PREFIX + latest.cacheKey }
+    : { items: mockChecklist, checklistKey: SAMPLE_CHECKLIST_KEY }
 }

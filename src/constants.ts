@@ -2,7 +2,6 @@ import type { Conditions } from './types'
 
 export const STORAGE_KEYS = {
   conditions: 'snow-planner:conditions',
-  checklist: 'snow-planner:checklist',
 } as const
 
 export const defaultConditions: Conditions = {
@@ -17,4 +16,4 @@ export const defaultConditions: Conditions = {
   visaExpiry: '2027-03-10',
 }
 
-export const defaultChecklistDone: Record<string, boolean> = { a1: true, c1: true }
+export const defaultChecklistDone: Record<string, boolean> = {}

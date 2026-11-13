@@ -4,7 +4,7 @@ import Header from '../components/Header'
 import ChatPanel from '../components/ChatPanel'
 import { useLocalStorage } from '../hooks/useLocalStorage'
 import { formatDate, getDday } from '../utils/dday'
-import { getPlan, type PlanSource } from '../services/planner'
+import { getPlan, SAMPLE_CHECKLIST_KEY, type PlanSource } from '../services/planner'
 import { defaultChecklistDone, defaultConditions, STORAGE_KEYS } from '../constants'
 import type { ChatAction, Conditions, Plan, Tab, ViewLang } from '../types'
 
@@ -75,17 +75,16 @@ function conditionChips(c: Conditions, lang: ViewLang): string[] {
 
 export default function PlannerPage() {
   const [conditions] = useLocalStorage<Conditions>(STORAGE_KEYS.conditions, defaultConditions)
-  const [done] = useLocalStorage<Record<string, boolean>>(STORAGE_KEYS.checklist, defaultChecklistDone)
   const [lang, setLang] = useState<ViewLang>(conditions.lang === 'ko' ? 'ko' : 'en')
   const [tab, setTab] = useState<Tab>('this')
-  const [loaded, setLoaded] = useState<{ key: string; plan: Plan; source: PlanSource } | null>(null)
+  const [loaded, setLoaded] = useState<{ key: string; plan: Plan; source: PlanSource; checklistKey: string } | null>(null)
   const [updated, setUpdated] = useState(false)
   const planKey = JSON.stringify({ conditions, lang })
 
   useEffect(() => {
     let alive = true
     getPlan(conditions, lang).then((r) => {
-      if (alive) setLoaded({ key: planKey, plan: r.plan, source: r.source })
+      if (alive) setLoaded({ key: planKey, plan: r.plan, source: r.source, checklistKey: r.checklistKey })
     })
     return () => {
       alive = false
@@ -95,6 +94,11 @@ export default function PlannerPage() {
   // 지금 조건·언어로 받은 계획만 보여주고, 아직 안 왔으면 null → 로딩 문구가 떠요
   const plan = loaded?.key === planKey ? loaded.plan : null
   const source = loaded?.key === planKey ? loaded.source : null
+  // 체크 상태는 계획별 키로 읽어요 (ChecklistPage와 같은 키)
+  const [done] = useLocalStorage<Record<string, boolean>>(
+    loaded?.key === planKey ? loaded.checklistKey : SAMPLE_CHECKLIST_KEY,
+    defaultChecklistDone,
+  )
 
   const L = lang === 'ko' ? KO : EN
   const chips = conditionChips(conditions, lang)
