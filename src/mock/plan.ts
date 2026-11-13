@@ -23,7 +23,8 @@ export const mockChecklist: ChecklistItem[] = [
   { id: 'c3', category: 'scholarship', text: 'Check scholarship criteria against last semester’s GPA and TOPIK level', ko: '외국인 유학생 장학금(학부)', due: 'Before next semester', source: '캠퍼스생활 > 장학금 > 학부 · 유학생서비스팀', urgent: false },
 ]
 
-export const mockPlans: Record<ViewLang, Plan> = {
+// 목업 계획은 en, ko 만 있어요. 그 밖의 언어는 en 을 씁니다 (mockPlanFor)
+export const mockPlans: Record<'en' | 'ko', Plan> = {
   en: {
     mustDos: [
       'Complete the required education (외국인유학생 필수교육)',
@@ -78,4 +79,8 @@ export const mockPlans: Record<ViewLang, Plan> = {
     ],
     checklist: mockChecklist,
   },
+}
+
+export function mockPlanFor(lang: ViewLang): Plan {
+  return mockPlans[lang === 'ko' ? 'ko' : 'en']
 }

@@ -3,16 +3,21 @@ import { Link } from 'react-router-dom'
 import Header from '../components/Header'
 import { useLocalStorage } from '../hooks/useLocalStorage'
 import { getChecklist } from '../services/planner'
-import { defaultChecklistDone } from '../constants'
-import type { ChecklistItem } from '../types'
+import { defaultChecklistDone, defaultConditions, STORAGE_KEYS } from '../constants'
+import { messages } from '../i18n'
+import type { ChecklistItem, Conditions } from '../types'
 
-const groups: { id: ChecklistItem['category']; title: string; ko: string; note?: string }[] = [
-  { id: 'stay', title: 'Stay', ko: '체류' },
-  { id: 'academics', title: 'Academics', ko: '학업' },
-  { id: 'scholarship', title: 'Scholarship', ko: '장학', note: 'If you miss the required education, you are excluded from next semester’s scholarship.' },
-]
+const groupIds: ChecklistItem['category'][] = ['stay', 'academics', 'scholarship']
 
 export default function ChecklistPage() {
+  const [conditions] = useLocalStorage<Conditions>(STORAGE_KEYS.conditions, defaultConditions)
+  const lang = conditions.lang
+  const T = messages[lang].checklist
+  const groups = groupIds.map((id) => ({
+    id,
+    ...T.groups[id],
+    note: id === 'scholarship' ? T.scholarshipNote : undefined,
+  }))
   const [{ items, checklistKey }] = useState(getChecklist)
   const [done, setDone] = useLocalStorage<Record<string, boolean>>(checklistKey, defaultChecklistDone)
 
@@ -22,21 +27,21 @@ export default function ChecklistPage() {
 
   return (
     <div className="min-h-screen">
-      <Header />
+      <Header lang={lang} />
       <main className="mx-auto flex max-w-[1120px] flex-col gap-6 px-6 pb-16 pt-10">
         <div className="flex flex-wrap items-end justify-between gap-4">
           <div className="flex flex-col gap-2">
-            <p className="text-sm font-medium text-brand">Step 3 of 3</p>
+            <p className="text-sm font-medium text-brand">{T.step}</p>
             <h1 className="text-[32px] font-bold leading-snug">
-              Checklist <span className="text-xl font-normal text-gray-600">체크리스트</span>
+              {T.title} {T.titleHint && <span className="text-xl font-normal text-gray-600">{T.titleHint}</span>}
             </h1>
-            <p className="text-[15px] text-gray-600">Saved on this device only. Nothing is sent to a server.</p>
+            <p className="text-[15px] text-gray-600">{T.saved}</p>
           </div>
           <div className="flex min-w-[260px] flex-col gap-2">
             <p className="text-[15px]">
-              <span className="text-2xl font-bold">{doneCount}</span> of {items.length} done
+              <span className="text-2xl font-bold">{doneCount}</span>{T.done(items.length)}
             </p>
-            <div role="img" aria-label={`${doneCount} of ${items.length} tasks done`} className="h-2.5 overflow-hidden rounded-full bg-gray-200">
+            <div role="img" aria-label={T.progressAria(doneCount, items.length)} className="h-2.5 overflow-hidden rounded-full bg-gray-200">
               <div className="h-full bg-brand transition-all" style={{ width: `${pct}%` }} />
             </div>
           </div>
@@ -49,7 +54,7 @@ export default function ChecklistPage() {
             <section key={g.id} aria-label={g.title} className="flex flex-col gap-1.5 rounded-2xl border border-gray-200 bg-white p-6">
               <div className="mb-2 flex flex-wrap items-baseline justify-between gap-2">
                 <h2 className="text-xl font-bold">
-                  {g.title} <span className="text-[15px] font-normal text-gray-600">{g.ko}</span>
+                  {g.title} {g.hint && <span className="text-[15px] font-normal text-gray-600">{g.hint}</span>}
                 </h2>
                 <p className="text-sm text-gray-600">{groupDone} / {groupItems.length}</p>
               </div>
@@ -78,12 +83,10 @@ export default function ChecklistPage() {
         })}
 
         <div>
-          <Link to="/plan" className="inline-flex min-h-12 items-center rounded-xl border border-gray-300 bg-white px-5 text-[15px] text-gray-700">← Back to plan</Link>
+          <Link to="/plan" className="inline-flex min-h-12 items-center rounded-xl border border-gray-300 bg-white px-5 text-[15px] text-gray-700">{T.back}</Link>
         </div>
 
-        <p className="text-[13px] leading-relaxed text-gray-600">
-          Based on 유학생서비스팀 public guidance, 2026-2학기. Please confirm final details with 유학생서비스팀 or the immigration office (출입국·외국인관서).
-        </p>
+        <p className="text-[13px] leading-relaxed text-gray-600">{T.footer}</p>
       </main>
     </div>
   )

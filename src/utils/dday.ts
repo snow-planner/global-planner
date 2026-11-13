@@ -1,4 +1,5 @@
 import type { ViewLang } from '../types'
+import { LOCALES } from '../i18n'
 
 function parseDate(value: string) {
   const [y, m, d] = value.split('-').map(Number)
@@ -16,6 +17,5 @@ export function getDday(expiry: string) {
 }
 
 export function formatDate(date: Date, lang: ViewLang) {
-  if (lang === 'ko') return `${date.getFullYear()}년 ${date.getMonth() + 1}월 ${date.getDate()}일`
-  return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+  return new Intl.DateTimeFormat(LOCALES[lang], { year: 'numeric', month: 'short', day: 'numeric' }).format(date)
 }

@@ -2,6 +2,7 @@ import { useEffect, useRef, useState, type FormEvent } from 'react'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import { isMockMode, sendMessage } from '../services/planner'
+import { messages as dict } from '../i18n'
 import type { ChatAction, ChatMessage, Conditions, ViewLang } from '../types'
 
 interface Props {
@@ -12,7 +13,7 @@ interface Props {
 }
 
 export default function ChatPanel({ lang, summary, conditions, onAction }: Props) {
-  const ko = lang === 'ko'
+  const T = dict[lang].chat
   const mock = isMockMode()
   const logRef = useRef<HTMLDivElement>(null)
 
@@ -23,21 +24,15 @@ export default function ChatPanel({ lang, summary, conditions, onAction }: Props
           {
             role: 'bot',
             local: true,
-            text: ko
-              ? '2026-2학기 계획을 만들었어요. 모든 항목을 왼쪽 계획표와 체크리스트에 넣었고, 확인이 필요한 것이 3가지 있어요.'
-              : 'Here is your plan for 2026 Fall. I put every item into the plan and checklist on the left. Three things need your confirmation.',
-            source: ko
-              ? '근거: 유학생서비스팀 사이트 (학업 · 비자 및 체류 · 장학금) · 2026-2학기'
-              : 'Sources: 유학생서비스팀 사이트 (학업 · 비자 및 체류 · 장학금) · 2026-2학기',
+            text: T.mockGreeting,
+            source: T.mockSource,
           },
         ]
       : [
           {
             role: 'bot',
             local: true,
-            text: ko
-              ? '입력한 조건으로 답해 드릴게요. 학업, 체류, 장학에 대해 궁금한 걸 물어보세요.'
-              : 'I will answer based on the conditions you entered. Ask me anything about academics, stay, or scholarships.',
+            text: T.greeting,
           },
         ],
   )
@@ -50,9 +45,7 @@ export default function ChatPanel({ lang, summary, conditions, onAction }: Props
     if (el) el.scrollTo({ top: el.scrollHeight, behavior: 'smooth' })
   }, [messages, sending])
 
-  const suggestions = ko
-    ? ['다음 학기는?', 'Show in English', '비자 연장 가능할까요?']
-    : ['What about next semester?', '한국어로 보여줘', 'Can I extend my visa?']
+  const suggestions = T.suggestions
 
   const send = async (text: string) => {
     const q = text.trim()
@@ -74,14 +67,14 @@ export default function ChatPanel({ lang, summary, conditions, onAction }: Props
 
   return (
     <aside
-      aria-label="Chat with SNOW Planner"
+      aria-label={T.title}
       className="flex h-[640px] min-w-0 flex-col rounded-2xl border border-gray-200 bg-white lg:sticky lg:top-6 lg:h-[calc(100vh-48px)] lg:max-h-[900px]"
     >
       <div className="flex shrink-0 items-center justify-between gap-2 border-b border-gray-200 px-5 py-4">
         <div className="flex flex-col gap-0.5">
-          <h2 className="text-[17px] font-bold">{ko ? 'SNOW 플래너와 대화' : 'Chat with SNOW Planner'}</h2>
+          <h2 className="text-[17px] font-bold">{T.title}</h2>
           <p className="text-xs text-gray-600">
-            {mock ? 'Demo mode · mock answers' : 'Live · SNOWCHAT API'} · 2026-2학기 자료
+            {mock ? T.demo : T.live} · {T.data}
           </p>
         </div>
         <span className={`h-2.5 w-2.5 rounded-full ${mock ? 'bg-gray-400' : 'bg-[#1F9D55]'}`} aria-hidden="true" />
@@ -115,7 +108,7 @@ export default function ChatPanel({ lang, summary, conditions, onAction }: Props
             </div>
           ),
         )}
-        {sending && <p className="text-sm text-gray-500">{ko ? '답변을 만드는 중…' : 'Thinking…'}</p>}
+        {sending && <p className="text-sm text-gray-500">{T.thinking}</p>}
       </div>
 
       <div className="flex shrink-0 flex-col gap-2.5 border-t border-gray-100 px-5 py-4">
@@ -134,19 +127,19 @@ export default function ChatPanel({ lang, summary, conditions, onAction }: Props
         </div>
         <form onSubmit={handleSubmit} className="flex gap-2">
           <label htmlFor="f-ask" className="sr-only">
-            {ko ? '질문 입력' : 'Ask a question'}
+            {T.askLabel}
           </label>
           <input
             id="f-ask"
             type="text"
             value={draft}
             onChange={(e) => setDraft(e.target.value)}
-            placeholder={ko ? '어떤 언어로든 질문하세요' : 'Ask in any language'}
+            placeholder={T.placeholder}
             className="h-12 min-w-0 flex-1 rounded-xl border border-gray-300 px-3.5 text-[15px]"
           />
           <button
             type="submit"
-            aria-label={ko ? '보내기' : 'Send'}
+            aria-label={T.send}
             disabled={sending}
             className="flex h-12 w-12 shrink-0 cursor-pointer items-center justify-center rounded-xl bg-brand disabled:opacity-50"
           >

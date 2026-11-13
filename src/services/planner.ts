@@ -1,5 +1,5 @@
 import type { ChatMessage, ChatReply, ChecklistItem, Conditions, Plan, ViewLang } from '../types'
-import { mockChecklist, mockPlans } from '../mock/plan'
+import { mockChecklist, mockPlanFor } from '../mock/plan'
 import { mockReply } from '../mock/mockChat'
 
 const USE_MOCK = import.meta.env.VITE_USE_MOCK !== 'false'
@@ -107,19 +107,13 @@ function writePlan(key: string, plan: Plan) {
   }
 }
 
-function planLanguage(conditions: Conditions, lang: ViewLang) {
-  if (lang === 'ko') return 'Korean'
-  if (conditions.lang === 'ko') return 'English'
-  return LANG_NAMES[conditions.lang]
-}
-
 export async function getPlan(conditions: Conditions, lang: ViewLang): Promise<{ plan: Plan; source: PlanSource; checklistKey: string }> {
   if (USE_MOCK) {
     await wait(500)
-    return { plan: mockPlans[lang], source: 'live', checklistKey: SAMPLE_CHECKLIST_KEY } // 목업 모드에서는 "예시 데이터" 배지를 띄우지 않아요
+    return { plan: mockPlanFor(lang), source: 'live', checklistKey: SAMPLE_CHECKLIST_KEY } // 목업 모드에서는 "예시 데이터" 배지를 띄우지 않아요
   }
 
-  const language = planLanguage(conditions, lang)
+  const language = LANG_NAMES[lang]
   const cacheKey = PLAN_CACHE_PREFIX + JSON.stringify({ conditions, language })
 
   const cached = readPlan(cacheKey)
@@ -146,8 +140,8 @@ export async function getPlan(conditions: Conditions, lang: ViewLang): Promise<{
     return { plan, source: 'live', checklistKey: CHECKLIST_PREFIX + cacheKey }
   } catch {
     // 체크리스트 화면도 같은 예시 데이터를 보여 주도록 latest를 바꿔요
-    writeLatest(SAMPLE_CACHE_KEY, mockPlans[lang])
-    return { plan: mockPlans[lang], source: 'fallback', checklistKey: SAMPLE_CHECKLIST_KEY }
+    writeLatest(SAMPLE_CACHE_KEY, mockPlanFor(lang))
+    return { plan: mockPlanFor(lang), source: 'fallback', checklistKey: SAMPLE_CHECKLIST_KEY }
   }
 }
 

@@ -1,5 +1,5 @@
 export type Lang = 'en' | 'ko' | 'zh' | 'vi' | 'my' | 'mn'
-export type ViewLang = 'en' | 'ko'
+export type ViewLang = Lang
 export type Visa = 'd2' | 'other' | 'none'
 export type Tab = 'this' | 'next'
 
