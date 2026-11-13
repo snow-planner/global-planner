@@ -41,7 +41,11 @@ function detectLang(text: string): string | null {
   if (/[\u1000-\u109f]/.test(text)) return 'Burmese'
   if (/[\u0400-\u04ff]/.test(text)) return 'Mongolian'
   if (/[ăâđêôơưạảấầẩẫậắằẳẵặẹẻẽếềểễệỉịọỏốồổỗộớờởỡợụủứừửữựỳỵỷỹ]/i.test(text)) return 'Vietnamese'
-  if (/[a-z]/i.test(text)) return 'English'
+  // Option letters (A/B/C/D) and fixed terms (TOPIK, GPA, D-2 …) don't tell us the language.
+  const words = text
+    .replace(/\b(?:TOPIK|GPA|PBT|IBT|P\/F|D-\d+)\b/gi, ' ')
+    .replace(/\b[a-z]\b/gi, ' ')
+  if (/[a-z]{2,}/i.test(words)) return 'English'
   return null
 }
 
