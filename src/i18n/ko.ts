@@ -126,6 +126,7 @@ const ko: Messages = {
     placeholder: '어떤 언어로든 질문하세요',
     send: '보내기',
     thinking: '답변을 만드는 중…',
+    newChat: '새 대화',
   },
 }
 

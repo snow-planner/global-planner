@@ -130,6 +130,7 @@ const mn: Messages = {
     placeholder: 'Ямар ч хэлээр асууж болно',
     send: 'Илгээх',
     thinking: 'Хариулт бэлдэж байна…',
+    newChat: 'Шинэ яриа',
   },
 }
 

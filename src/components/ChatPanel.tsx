@@ -3,7 +3,22 @@ import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import { isMockMode, sendMessage } from '../services/planner'
 import { messages as dict } from '../i18n'
+import { parseChoices } from '../utils/choices'
 import type { ChatAction, ChatMessage, Conditions, ViewLang } from '../types'
+
+// 화면을 옮겨도 대화가 남도록 브라우저 탭 동안만 저장해요 (탭을 닫으면 사라짐)
+const CHAT_KEY = 'snow-planner:chat'
+
+function readSavedChat(): ChatMessage[] | null {
+  try {
+    const raw = sessionStorage.getItem(CHAT_KEY)
+    if (!raw) return null
+    const parsed: unknown = JSON.parse(raw)
+    return Array.isArray(parsed) && parsed.length > 0 ? (parsed as ChatMessage[]) : null
+  } catch {
+    return null
+  }
+}
 
 interface Props {
   lang: ViewLang
@@ -17,7 +32,8 @@ export default function ChatPanel({ lang, summary, conditions, onAction }: Props
   const mock = isMockMode()
   const logRef = useRef<HTMLDivElement>(null)
 
-  const [messages, setMessages] = useState<ChatMessage[]>(() =>
+  // 처음 인사 메시지 (새 대화를 누르면 이 상태로 돌아가요)
+  const initialMessages = (): ChatMessage[] =>
     mock
       ? [
           { role: 'user', text: summary, local: true },
@@ -34,10 +50,20 @@ export default function ChatPanel({ lang, summary, conditions, onAction }: Props
             local: true,
             text: T.greeting,
           },
-        ],
-  )
+        ]
+
+  const [messages, setMessages] = useState<ChatMessage[]>(() => readSavedChat() ?? initialMessages())
   const [draft, setDraft] = useState('')
   const [sending, setSending] = useState(false)
+
+  // 대화가 바뀔 때마다 sessionStorage에 저장
+  useEffect(() => {
+    try {
+      sessionStorage.setItem(CHAT_KEY, JSON.stringify(messages))
+    } catch {
+      // 저장 실패해도 대화는 계속 가능
+    }
+  }, [messages])
 
   // 새 메시지가 생기면 대화 영역 맨 아래로 스크롤
   useEffect(() => {
@@ -60,6 +86,12 @@ export default function ChatPanel({ lang, summary, conditions, onAction }: Props
     onAction(reply.action)
   }
 
+  const resetChat = () => {
+    if (sending) return
+    setMessages(initialMessages())
+    setDraft('')
+  }
+
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault()
     send(draft)
@@ -77,12 +109,26 @@ export default function ChatPanel({ lang, summary, conditions, onAction }: Props
             {mock ? T.demo : T.live} · {T.data}
           </p>
         </div>
-        <span className={`h-2.5 w-2.5 rounded-full ${mock ? 'bg-gray-400' : 'bg-[#1F9D55]'}`} aria-hidden="true" />
+        <div className="flex items-center gap-3">
+          <button
+            type="button"
+            onClick={resetChat}
+            disabled={sending}
+            className="min-h-10 cursor-pointer rounded-lg border border-gray-300 bg-white px-3 text-[13px] font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50"
+          >
+            {T.newChat}
+          </button>
+          <span className={`h-2.5 w-2.5 rounded-full ${mock ? 'bg-gray-400' : 'bg-[#1F9D55]'}`} aria-hidden="true" />
+        </div>
       </div>
 
       <div ref={logRef} role="log" aria-live="polite" className="flex min-h-0 flex-1 flex-col gap-3.5 overflow-y-auto p-5">
-        {messages.map((m, i) =>
-          m.role === 'user' ? (
+        {messages.map((m, i) => {
+          // 선택지 버튼은 가장 마지막 봇 답변에만 보여줘요 (답을 보내면 사라짐)
+          const isLast = i === messages.length - 1
+          const parsed = m.role === 'bot' && isLast && !sending ? parseChoices(m.text) : null
+          const shownText = parsed && parsed.choices.length > 0 ? parsed.body : m.text
+          return m.role === 'user' ? (
             <div key={i} className="flex flex-col items-end">
               <div className="max-w-[85%] whitespace-pre-wrap rounded-[14px_14px_4px_14px] bg-brand px-3.5 py-2.5 text-sm leading-relaxed text-white">
                 {m.text}
@@ -101,13 +147,27 @@ export default function ChatPanel({ lang, summary, conditions, onAction }: Props
                     ),
                   }}
                 >
-                  {m.text}
+                  {shownText}
                 </ReactMarkdown>
               </div>
+              {parsed && parsed.choices.length > 0 && (
+                <div className="flex max-w-[95%] flex-wrap gap-2 pt-1">
+                  {parsed.choices.map((c) => (
+                    <button
+                      key={c}
+                      type="button"
+                      onClick={() => send(c)}
+                      className="min-h-10 cursor-pointer rounded-full border border-[#C9D5F7] bg-[#F5F7FE] px-3.5 py-1.5 text-left text-[13px] text-brand-dark hover:bg-brand-soft"
+                    >
+                      {c}
+                    </button>
+                  ))}
+                </div>
+              )}
               {m.source && <p className="text-xs leading-relaxed text-gray-600">{m.source}</p>}
             </div>
-          ),
-        )}
+          )
+        })}
         {sending && <p className="text-sm text-gray-500">{T.thinking}</p>}
       </div>
 

@@ -130,6 +130,7 @@ const vi: Messages = {
     placeholder: 'Hỏi bằng bất kỳ ngôn ngữ nào',
     send: 'Gửi',
     thinking: 'Đang trả lời…',
+    newChat: 'Cuộc trò chuyện mới',
   },
 }
 
