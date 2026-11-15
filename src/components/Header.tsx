@@ -30,18 +30,31 @@ export default function Header({ lang }: { lang: ViewLang }) {
           </span>
         </Link>
         <nav aria-label={T.nav} className="flex flex-wrap gap-1 text-sm">
-          {links.map((l) => (
-            <NavLink
-              key={l.to}
-              to={l.to}
-              end
-              className={({ isActive }) =>
-                `rounded-lg px-3.5 py-2.5 ${isActive ? 'bg-brand-soft font-medium text-brand-dark' : 'text-gray-700 hover:bg-gray-100'}`
-              }
-            >
-              {l.label}
-            </NavLink>
-          ))}
+          {links.map((l) => {
+            // "1 조건 입력" → 번호(동그라미) + 이름으로 나눠서 단계 버튼처럼 보이게 해요
+            const m = l.label.match(/^(\d)\s+(.*)$/)
+            return (
+              <NavLink
+                key={l.to}
+                to={l.to}
+                end
+                className={({ isActive }) =>
+                  `inline-flex min-h-11 cursor-pointer items-center gap-2 rounded-xl border px-3.5 transition-colors ${
+                    isActive
+                      ? 'border-brand bg-brand font-semibold text-white'
+                      : 'border-gray-300 bg-white text-gray-800 hover:border-brand hover:bg-brand-soft hover:text-brand-dark'
+                  }`
+                }
+              >
+                {m && (
+                  <span aria-hidden="true" className="flex h-5 w-5 items-center justify-center rounded-full bg-current/15 text-xs font-bold">
+                    {m[1]}
+                  </span>
+                )}
+                {m ? m[2] : l.label}
+              </NavLink>
+            )
+          })}
         </nav>
       </div>
     </header>
