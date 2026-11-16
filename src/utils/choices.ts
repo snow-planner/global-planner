@@ -20,7 +20,9 @@ function clean(line: string): string {
 // → "필요 서류: - 여권 - 외국인등록증" 같은 설명 목록은 버튼으로 바꾸지 않아요
 function endsWithQuestion(body: string): boolean {
   const lastLine = body.split('\n').filter((l) => l.trim()).pop() ?? ''
-  return /[?？]$/.test(lastLine.replace(/[*_`\s]+$/g, ''))
+  const line = lastLine.replace(/[*_`\s]+$/g, '')
+  // 미얀마어는 물음표 대신 의문 어미(လား, လဲ, သလဲ …) + 마침표(။)로 질문을 끝내요
+  return /[?？]$/.test(line) || /(လား|လဲ)\s*[။?]?$/.test(line)
 }
 
 export interface ParsedChoices {
