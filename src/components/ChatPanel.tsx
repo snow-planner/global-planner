@@ -9,12 +9,17 @@ import type { ChatAction, ChatMessage, Conditions, ViewLang } from '../types'
 // 화면을 옮겨도 대화가 남도록 브라우저 탭 동안만 저장해요 (탭을 닫으면 사라짐)
 const CHAT_KEY = 'snow-planner:chat'
 
-function readSavedChat(): ChatMessage[] | null {
+// 저장 형식: { key: 저장 당시 조건(문자열), messages: 대화 }
+// 조건이 바뀌면 이전 대화는 새 조건과 맞지 않으니 저장된 대화를 쓰지 않고 새로 시작해요
+function readSavedChat(conditionsKey: string): ChatMessage[] | null {
   try {
     const raw = sessionStorage.getItem(CHAT_KEY)
     if (!raw) return null
-    const parsed: unknown = JSON.parse(raw)
-    return Array.isArray(parsed) && parsed.length > 0 ? (parsed as ChatMessage[]) : null
+    const saved: unknown = JSON.parse(raw)
+    if (typeof saved !== 'object' || saved === null) return null
+    const { key, messages } = saved as { key?: unknown; messages?: unknown }
+    if (key !== conditionsKey || !Array.isArray(messages) || messages.length === 0) return null
+    return messages as ChatMessage[]
   } catch {
     return null
   }
@@ -52,18 +57,20 @@ export default function ChatPanel({ lang, summary, conditions, onAction }: Props
           },
         ]
 
-  const [messages, setMessages] = useState<ChatMessage[]>(() => readSavedChat() ?? initialMessages())
+  // 조건이 같을 때만 저장된 대화를 이어가요 (언어는 대화 중에 바뀔 수 있어서 비교에서 뺐어요)
+  const conditionsKey = JSON.stringify(conditions)
+  const [messages, setMessages] = useState<ChatMessage[]>(() => readSavedChat(conditionsKey) ?? initialMessages())
   const [draft, setDraft] = useState('')
   const [sending, setSending] = useState(false)
 
   // 대화가 바뀔 때마다 sessionStorage에 저장
   useEffect(() => {
     try {
-      sessionStorage.setItem(CHAT_KEY, JSON.stringify(messages))
+      sessionStorage.setItem(CHAT_KEY, JSON.stringify({ key: conditionsKey, messages }))
     } catch {
       // 저장 실패해도 대화는 계속 가능
     }
-  }, [messages])
+  }, [messages, conditionsKey])
 
   // 새 메시지가 생기면 대화 영역 맨 아래로 스크롤
   useEffect(() => {

@@ -16,6 +16,13 @@ function clean(line: string): string {
     .trim()
 }
 
+// 목록 바로 앞 문장이 물음표로 끝나면 "고르라는 질문"으로 봐요 (**굵게** 같은 기호는 무시)
+// → "필요 서류: - 여권 - 외국인등록증" 같은 설명 목록은 버튼으로 바꾸지 않아요
+function endsWithQuestion(body: string): boolean {
+  const lastLine = body.split('\n').filter((l) => l.trim()).pop() ?? ''
+  return /[?？]$/.test(lastLine.replace(/[*_`\s]+$/g, ''))
+}
+
 export interface ParsedChoices {
   body: string // 선택지 목록을 뺀 본문 (마크다운으로 표시)
   choices: string[] // 버튼으로 보여줄 글자 (누르면 이 글자가 그대로 답으로 전송)
@@ -34,9 +41,9 @@ export function parseChoices(text: string): ParsedChoices {
     items.length <= MAX_CHOICES &&
     items.every((s) => s.length > 0 && s.length <= MAX_CHOICE_LENGTH)
 
-  // 목록 앞에 본문(질문 문장)이 없으면 선택지로 보지 않아요
+  // 목록 앞에 질문 문장(? 로 끝남)이 없으면 선택지로 보지 않아요
   const body = lines.slice(0, start).join('\n').trimEnd()
-  if (!valid || !body) return { body: text, choices: [] }
+  if (!valid || !body || !endsWithQuestion(body)) return { body: text, choices: [] }
 
   return { body, choices: items }
 }
