@@ -126,6 +126,7 @@ const zh: Messages = {
     placeholder: '可以用任何语言提问',
     send: '发送',
     thinking: '正在回答…',
+    newChat: '新对话',
   },
 }
 

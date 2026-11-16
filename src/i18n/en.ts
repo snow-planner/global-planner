@@ -128,6 +128,7 @@ const en = {
     placeholder: 'Ask in any language',
     send: 'Send',
     thinking: 'Thinking…',
+    newChat: 'New chat',
   },
 }
 
