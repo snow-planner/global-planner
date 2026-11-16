@@ -32,6 +32,15 @@ export function mockReply(input: string, lang: ViewLang): ChatReply {
       source: (ko ? '근거: ' : 'Source: ') + SRC.visa + ' · 유학생서비스팀',
     }
   }
+  // 선택지 버튼 확인용: "선택" / "choice"를 입력하면 선택지 목록으로 끝나는 답이 나와요
+  // (각 선택지는 아래 다른 분기로 이어지는 문장이라, 눌러 보면 다음 답이 이어져요)
+  if (q.includes('choice') || input.includes('선택')) {
+    return {
+      text: ko
+        ? '어떤 내용을 먼저 볼까요?\n\n- 비자 연장 알려줘\n- 다음 학기 계획 보여줘\n- 이번 학기 계획 보여줘'
+        : 'What would you like to see first?\n\n- Tell me about visa extension\n- Show next semester plan\n- Show this semester plan',
+    }
+  }
   return {
     text: ko
       ? '(데모) 실제 서비스에서는 이 질문이 SNOWCHAT API로 전달되고, 답변이 여기에 표시돼요.'
