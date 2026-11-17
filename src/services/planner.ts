@@ -15,10 +15,12 @@ function conditionsText(c: Conditions) {
   const visa = { d2: 'D-2', other: 'Other', none: 'Prefer not to say' }[c.visa]
   return [
     '[My conditions]',
+    `- Today: ${new Date().toLocaleDateString('sv-SE')}`,
     `- Student type: ${status}`,
     `- Year: ${c.year}`,
     `- Major: ${c.major}`,
     `- Visa type: ${visa}`,
+    ...(c.visa === 'd2' && c.visaExpiry ? [`- Visa expiry date: ${c.visaExpiry}`] : []),
     `- Korean level: ${c.topik === '0' ? 'No TOPIK' : `TOPIK ${c.topik}`}`,
     `- Entry: ${c.entry === 'after' ? 'From September 2025 onward' : 'Before September 2025'}`,
     `- Course track: ${c.track === 'korean' ? 'Korean track' : 'English track'}`,
