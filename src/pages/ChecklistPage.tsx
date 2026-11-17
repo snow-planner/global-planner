@@ -1,11 +1,11 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import Header from '../components/Header'
 import { useLocalStorage } from '../hooks/useLocalStorage'
-import { getChecklist } from '../services/planner'
 import { defaultChecklistDone, defaultConditions, STORAGE_KEYS } from '../constants'
 import { messages } from '../i18n'
 import type { ChecklistItem, Conditions } from '../types'
+import { getPlan } from '../services/planner'
 
 const groupIds: ChecklistItem['category'][] = ['stay', 'academics', 'scholarship']
 
@@ -18,7 +18,23 @@ export default function ChecklistPage() {
     ...T.groups[id],
     note: id === 'scholarship' ? T.scholarshipNote : undefined,
   }))
-  const [{ items, checklistKey }] = useState(getChecklist)
+  // 지금 조건·언어에 맞는 계획을 받아와요 (플래너에서 만든 게 있으면 캐시에서 바로 나와요)
+  const planKey = JSON.stringify({ conditions, lang })
+  const [loaded, setLoaded] = useState<{ key: string; items: ChecklistItem[]; checklistKey: string } | null>(null)
+
+  useEffect(() => {
+    let alive = true
+    getPlan(conditions, lang).then((r) => {
+      if (alive) setLoaded({ key: planKey, items: r.plan.checklist, checklistKey: r.checklistKey })
+    })
+    return () => {
+      alive = false
+    }
+  }, [conditions, lang, planKey])
+
+  const ready = loaded?.key === planKey
+  const items = ready ? loaded.items : []
+  const checklistKey = ready ? loaded.checklistKey : 'snow-planner:checklist:loading'
   const [done, setDone] = useLocalStorage<Record<string, boolean>>(checklistKey, defaultChecklistDone)
 
   const doneCount = items.filter((i) => done[i.id]).length
@@ -47,7 +63,9 @@ export default function ChecklistPage() {
           </div>
         </div>
 
-        {groups.map((g) => {
+        {!ready && <p className="text-[15px] text-gray-600">{messages[lang].planner.loading}</p>}
+
+        {ready && groups.map((g) => {
           const groupItems = items.filter((i) => i.category === g.id)
           const groupDone = groupItems.filter((i) => done[i.id]).length
           return (

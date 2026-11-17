@@ -107,7 +107,12 @@ function writePlan(key: string, plan: Plan) {
   }
 }
 
-export async function getPlan(conditions: Conditions, lang: ViewLang): Promise<{ plan: Plan; source: PlanSource; checklistKey: string }> {
+type PlanResult = { plan: Plan; source: PlanSource; checklistKey: string }
+
+// 같은 조건·언어로 이미 요청 중이면 그 요청을 같이 기다려요 (플래너·체크리스트가 동시에 불러도 API는 한 번만 호출)
+const inflight = new Map<string, Promise<PlanResult>>()
+
+export async function getPlan(conditions: Conditions, lang: ViewLang): Promise<PlanResult> {
   if (USE_MOCK) {
     await wait(500)
     return { plan: mockPlanFor(lang), source: 'live', checklistKey: SAMPLE_CHECKLIST_KEY } // 목업 모드에서는 "예시 데이터" 배지를 띄우지 않아요
@@ -122,6 +127,16 @@ export async function getPlan(conditions: Conditions, lang: ViewLang): Promise<{
     return { plan: cached, source: 'cache', checklistKey: CHECKLIST_PREFIX + cacheKey }
   }
 
+  const pending = inflight.get(cacheKey)
+  if (pending) return pending
+
+  const request = requestPlan(conditions, lang, cacheKey).finally(() => inflight.delete(cacheKey))
+  inflight.set(cacheKey, request)
+  return request
+}
+
+async function requestPlan(conditions: Conditions, lang: ViewLang, cacheKey: string): Promise<PlanResult> {
+  const language = LANG_NAMES[lang]
   try {
     const res = await fetch('/api/plan', {
       method: 'POST',
@@ -153,7 +168,9 @@ export async function sendMessage(history: ChatMessage[], lang: ViewLang, condit
     return mockReply(last, lang)
   }
 
-  const real = history.filter((m) => !m.local).map((m) => ({ ...m }))
+  // 서버는 최대 30개까지만 받아서 최근 20개만 보내요 (맨 앞은 사용자 질문이 되게 맞춤)
+  let real = history.filter((m) => !m.local).map((m) => ({ ...m })).slice(-20)
+  while (real.length > 0 && real[0].role !== 'user') real = real.slice(1)
   if (real.length > 0) {
     real[0].text = `${conditionsText(conditions)}\n\n${real[0].text}`
 
