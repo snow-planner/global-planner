@@ -128,9 +128,17 @@ export default function PlannerPage() {
 
             <div className="flex flex-col gap-2.5 border-t border-gray-200 p-5">
               <p className="text-sm font-medium text-gray-600">{L.must}</p>
-              <ol className="flex list-decimal flex-col gap-1.5 pl-5 text-sm leading-relaxed">
-                {plan?.mustDos.map((m) => <li key={m}>{m}</li>)}
-              </ol>
+              {plan ? (
+                <ol className="flex list-decimal flex-col gap-1.5 pl-5 text-sm leading-relaxed">
+                  {plan.mustDos.map((m) => <li key={m}>{m}</li>)}
+                </ol>
+              ) : (
+                <div aria-hidden="true" className="flex flex-col gap-2.5 motion-safe:animate-pulse">
+                  <span className="h-4 w-11/12 rounded bg-gray-200" />
+                  <span className="h-4 w-4/5 rounded bg-gray-200" />
+                  <span className="h-4 w-3/5 rounded bg-gray-200" />
+                </div>
+              )}
             </div>
           </section>
 
@@ -162,7 +170,18 @@ export default function PlannerPage() {
                 ))}
             </ol>
             ) : (
-              <p className="py-10 text-center text-gray-500">{L.loading}</p>
+              <div role="status" className="flex flex-col gap-3">
+                <p className="text-sm text-gray-500">{L.loading}</p>
+                <ol aria-hidden="true" className="flex flex-col divide-y divide-gray-200 rounded-xl border border-gray-200">
+                  {[0, 1, 2].map((i) => (
+                    <li key={i} className="flex flex-col gap-2.5 p-4 motion-safe:animate-pulse">
+                      <span className="h-6 w-28 rounded-full bg-gray-200" />
+                      <span className="h-4 w-full rounded bg-gray-200" />
+                      <span className="h-4 w-2/3 rounded bg-gray-200" />
+                    </li>
+                  ))}
+                </ol>
+              </div>
             )}
           </section>
 
