@@ -1,5 +1,13 @@
 import type { Conditions, Lang, Term, YearMonth } from './types'
 
+// 화면 주소 (세 대시보드 주소는 오른쪽 패널만 달라요)
+export const ROUTES = {
+  home: '/',
+  chat: '/chat',
+  plan: '/plan',
+  checklist: '/checklist',
+} as const
+
 export const STORAGE_KEYS = {
   conditions: 'snow-planner:conditions',
 } as const

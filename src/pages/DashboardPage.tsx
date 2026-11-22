@@ -12,7 +12,7 @@ import { useHtmlLang } from '../hooks/useHtmlLang'
 import { getDday } from '../utils/dday'
 import { conditionChips } from '../utils/conditions'
 import { getPlan, type PlanSource } from '../services/planner'
-import { defaultChecklistDone, defaultConditions, STORAGE_KEYS } from '../constants'
+import { defaultChecklistDone, defaultConditions, ROUTES, STORAGE_KEYS } from '../constants'
 import { messages } from '../i18n'
 import { getDashboardText } from '../i18n/dashboard'
 import type { ChatAction, ChecklistItem, Conditions, Panel, Plan, Tab, ViewLang } from '../types'
@@ -61,13 +61,13 @@ export default function DashboardPage({ panel }: { panel: Panel }) {
   const summary = `${chips} — ${L.ask}`
   const dday = conditions.visa === 'd2' && conditions.visaExpiry ? getDday(conditions.visaExpiry) : null
 
-  const closePanel = () => navigate('/chat')
+  const closePanel = () => navigate(ROUTES.chat)
 
   const handleAction = (action?: ChatAction) => {
     if (!action) return
     if (action.type === 'setTab') {
       setTab(action.tab)
-      navigate('/plan') // 계획이 바뀌었으니 패널을 열어서 보여줘요
+      navigate(ROUTES.plan) // 계획이 바뀌었으니 패널을 열어서 보여줘요
     }
     if (action.type === 'setLang') setLang(action.lang)
     setUpdated(true)
@@ -99,7 +99,7 @@ export default function DashboardPage({ panel }: { panel: Panel }) {
           {todayItem.text} · {todayItem.due}
         </p>
       </div>
-      <Link to="/checklist" className="shrink-0 rounded-full bg-brand px-4 py-1.5 text-xs font-semibold text-white hover:bg-brand-dark">
+      <Link to={ROUTES.checklist} className="shrink-0 rounded-full bg-brand px-4 py-1.5 text-xs font-semibold text-white hover:bg-brand-dark">
         {D.openChecklist}
       </Link>
     </div>

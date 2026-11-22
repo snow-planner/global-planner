@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom'
 import { ChevronDownIcon, GlobeIcon, SnowMark } from '../icons'
 import { messages } from '../../i18n'
 import { getDashboardText } from '../../i18n/dashboard'
-import { LANG_OPTIONS } from '../../constants'
+import { LANG_OPTIONS, ROUTES } from '../../constants'
 import { formatDate, type getDday } from '../../utils/dday'
 import type { ViewLang } from '../../types'
 
@@ -18,7 +18,7 @@ export default function Topbar({ lang, onLangChange, dday }: Props) {
 
   return (
     <header className="flex h-16 shrink-0 items-center gap-3 border-b border-line bg-white px-4 lg:h-[72px] lg:px-8">
-      <Link to="/chat" aria-label={D.brand} className="lg:hidden">
+      <Link to={ROUTES.chat} aria-label={D.brand} className="lg:hidden">
         <SnowMark size={28} />
       </Link>
       <div className="flex min-w-0 flex-1 items-baseline gap-4">

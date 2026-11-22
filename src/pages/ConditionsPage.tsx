@@ -3,7 +3,7 @@ import ConditionsForm, { type UpdateCondition } from '../components/ConditionsFo
 import { CheckIcon, LockIcon, SendIcon, SnowMark } from '../components/icons'
 import { useLocalStorage } from '../hooks/useLocalStorage'
 import { useHtmlLang } from '../hooks/useHtmlLang'
-import { defaultConditions, STORAGE_KEYS } from '../constants'
+import { defaultConditions, ROUTES, STORAGE_KEYS } from '../constants'
 import { messages } from '../i18n'
 import { getDashboardText } from '../i18n/dashboard'
 import type { Conditions } from '../types'
@@ -88,7 +88,7 @@ export default function ConditionsPage() {
           <div className="mx-auto flex w-full max-w-[760px] items-center justify-between gap-4">
             <p className="hidden text-sm text-gray-500 sm:block">{T.changeLater}</p>
             <Link
-              to="/plan"
+              to={ROUTES.plan}
               className="inline-flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-brand px-7 text-[15px] font-bold text-white hover:bg-brand-dark sm:w-auto"
             >
               {T.submit}
