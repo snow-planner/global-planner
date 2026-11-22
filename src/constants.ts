@@ -14,6 +14,9 @@ export const VISA_APPLY_MONTHS_BEFORE = 4
 // 이 너비부터 패널을 채팅 옆에 띄워요 (Tailwind xl과 같아야 함)
 export const PANEL_INLINE_MIN_WIDTH = 1280
 
+// 챗봇에 보내는 최근 대화 개수 (서버는 최대 30개까지 받아요)
+export const CHAT_HISTORY_LIMIT = 20
+
 export const STORAGE_KEYS = {
   conditions: 'snow-planner:conditions',
 } as const

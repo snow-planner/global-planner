@@ -1,7 +1,7 @@
 import type { ChatMessage, ChatReply, ChecklistItem, Conditions, Plan, ViewLang } from '../types'
 import { mockChecklist, mockPlanFor } from '../mock/plan'
 import { mockReply } from '../mock/mockChat'
-import { ENTRY_CUTOFF } from '../constants'
+import { CHAT_HISTORY_LIMIT, ENTRY_CUTOFF } from '../constants'
 import { messages } from '../i18n'
 import { monthName } from '../i18n/format'
 
@@ -175,7 +175,7 @@ export async function sendMessage(history: ChatMessage[], lang: ViewLang, condit
   }
 
   // 서버는 최대 30개까지만 받아서 최근 20개만 보내요 (맨 앞은 사용자 질문이 되게 맞춤)
-  let real = history.filter((m) => !m.local).map((m) => ({ ...m })).slice(-20)
+  let real = history.filter((m) => !m.local).map((m) => ({ ...m })).slice(-CHAT_HISTORY_LIMIT)
   while (real.length > 0 && real[0].role !== 'user') real = real.slice(1)
   if (real.length > 0) {
     real[0].text = `${conditionsText(conditions)}\n\n${real[0].text}`
