@@ -1,5 +1,7 @@
 import type { ChatReply, ViewLang } from '../types'
 import { SRC } from './plan'
+import { TERMS } from '../constants'
+import { termEn, termKo } from '../i18n/format'
 
 export function mockReply(input: string, lang: ViewLang): ChatReply {
   const q = input.toLowerCase()
@@ -13,7 +15,7 @@ export function mockReply(input: string, lang: ViewLang): ChatReply {
   }
   if (q.includes('next') || input.includes('다음 학기')) {
     return {
-      text: ko ? '2027-1학기 계획으로 바꿨어요. 왼쪽 계획표를 확인하세요.' : 'Here is your plan for 2027 Spring. I switched the plan on the left.',
+      text: ko ? `${termKo(TERMS.next)} 계획으로 바꿨어요. 왼쪽 계획표를 확인하세요.` : `Here is your plan for ${termEn(TERMS.next)}. I switched the plan on the left.`,
       source: (ko ? '근거: ' : 'Source: ') + SRC.course,
       action: { type: 'setTab', tab: 'next' },
     }

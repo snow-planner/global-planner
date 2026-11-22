@@ -2,6 +2,17 @@ export type Lang = 'en' | 'ko' | 'zh' | 'vi' | 'my' | 'mn'
 export type ViewLang = Lang
 export type Visa = 'd2' | 'other' | 'none'
 export type Tab = 'this' | 'next'
+// 학기: 1학기(봄) · 2학기(가을)
+export interface Term {
+  year: number
+  semester: 1 | 2
+}
+
+export interface YearMonth {
+  year: number
+  month: number // 1~12
+}
+
 export type Panel = 'plan' | 'checklist' | null // 오른쪽에 열린 패널 (null이면 채팅만)
 
 export interface Conditions {

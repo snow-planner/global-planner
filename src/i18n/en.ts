@@ -1,4 +1,6 @@
 // 기계 번역 초안: 원어민 검토 필요
+import type { Term, YearMonth } from '../types'
+import { monthName, termEn, termKo } from './format'
 const en = {
   common: {
     year: (n: number) => `${['1st', '2nd', '3rd', '4th'][n - 1] ?? `${n}th`} year`,
@@ -36,8 +38,8 @@ const en = {
     topikNone: 'No TOPIK yet',
     entryLabel: 'When you entered',
     entryHint: '입학 시기',
-    entryBefore: 'Before September 2025',
-    entryAfter: 'From September 2025 onward',
+    entryBefore: (c: YearMonth) => `Before ${monthName(c, 'en-US')} ${c.year}`,
+    entryAfter: (c: YearMonth) => `From ${monthName(c, 'en-US')} ${c.year} onward`,
     trackLabel: 'Course track',
     trackHint: '수업 트랙',
     track: {
@@ -77,8 +79,8 @@ const en = {
     plan: 'Semester plan · 학기별 계획표',
     updated: 'Updated from chat',
     sample: 'Sample data',
-    tabThis: 'This semester · 2026 Fall',
-    tabNext: 'Next semester · 2027 Spring',
+    tabThis: (t: Term) => `This semester · ${termEn(t)}`,
+    tabNext: (t: Term) => `Next semester · ${termEn(t)}`,
     hWhen: 'Timing',
     hWhat: 'What to do',
     hSource: 'Source · Office',
@@ -86,7 +88,7 @@ const en = {
     loading: 'Making your plan…',
     ask: 'What do I need to do this semester and next?',
     footer:
-      'Based on 유학생서비스팀 public guidance, 2026-2학기. This is guidance, not an official decision. Please confirm final details with 유학생서비스팀 or the immigration office.',
+      (t: Term) => `Based on 유학생서비스팀 public guidance, ${termKo(t)}. This is guidance, not an official decision. Please confirm final details with 유학생서비스팀 or the immigration office.`,
     chips: {
       d2: 'D-2',
       otherVisa: 'Other visa',
@@ -94,8 +96,8 @@ const en = {
       noTopik: 'No TOPIK',
       koreanTrack: 'Korean track',
       englishTrack: 'English track',
-      entryAfter: 'Entered Sep 2025 or later',
-      entryBefore: 'Entered before Sep 2025',
+      entryAfter: (c: YearMonth) => `Entered ${monthName(c, 'en-US', 'short')} ${c.year} or later`,
+      entryBefore: (c: YearMonth) => `Entered before ${monthName(c, 'en-US', 'short')} ${c.year}`,
     },
   },
   checklist: {
@@ -113,16 +115,16 @@ const en = {
     scholarshipNote: 'If you miss the required education, you are excluded from next semester’s scholarship.',
     back: '← Back to plan',
     footer:
-      'Based on 유학생서비스팀 public guidance, 2026-2학기. Please confirm final details with 유학생서비스팀 or the immigration office (출입국·외국인관서).',
+      (t: Term) => `Based on 유학생서비스팀 public guidance, ${termKo(t)}. Please confirm final details with 유학생서비스팀 or the immigration office (출입국·외국인관서).`,
   },
   chat: {
     title: 'Chat with SNOW Planner',
     demo: 'Demo mode · mock answers',
     live: 'Live · SNOWCHAT API',
-    data: '2026-2학기 자료',
+    data: (t: Term) => `${termKo(t)} 자료`,
     mockGreeting:
-      'Here is your plan for 2026 Fall. I put every item into the plan and checklist on the left. Three things need your confirmation.',
-    mockSource: 'Sources: 유학생서비스팀 사이트 (학업 · 비자 및 체류 · 장학금) · 2026-2학기',
+      (t: Term) => `Here is your plan for ${termEn(t)}. I put every item into the plan and checklist on the left. Three things need your confirmation.`,
+    mockSource: (t: Term) => `Sources: 유학생서비스팀 사이트 (학업 · 비자 및 체류 · 장학금) · ${termKo(t)}`,
     greeting: 'I will answer based on the conditions you entered. Ask me anything about academics, stay, or scholarships.',
     suggestions: ['What about next semester?', '한국어로 보여줘', 'Can I extend my visa?'],
     askLabel: 'Ask a question',

@@ -1,5 +1,6 @@
 // 기계 번역 초안: 원어민 검토 필요
 import type { Messages } from './en'
+import { isSpring, termKo } from './format'
 
 const vi: Messages = {
   common: {
@@ -38,8 +39,8 @@ const vi: Messages = {
     topikNone: 'Chưa có TOPIK',
     entryLabel: 'Thời gian nhập học',
     entryHint: '입학 시기',
-    entryBefore: 'Trước tháng 9/2025',
-    entryAfter: 'Từ tháng 9/2025 trở đi',
+    entryBefore: (c) => `Trước tháng ${c.month}/${c.year}`,
+    entryAfter: (c) => `Từ tháng ${c.month}/${c.year} trở đi`,
     trackLabel: 'Ngôn ngữ học',
     trackHint: '수업 트랙',
     track: {
@@ -79,8 +80,8 @@ const vi: Messages = {
     plan: 'Kế hoạch theo học kỳ (학기별 계획표)',
     updated: 'Đã cập nhật từ trò chuyện',
     sample: 'Dữ liệu mẫu',
-    tabThis: 'Học kỳ này · Mùa thu 2026',
-    tabNext: 'Học kỳ sau · Mùa xuân 2027',
+    tabThis: (t) => `Học kỳ này · ${isSpring(t) ? 'Mùa xuân' : 'Mùa thu'} ${t.year}`,
+    tabNext: (t) => `Học kỳ sau · ${isSpring(t) ? 'Mùa xuân' : 'Mùa thu'} ${t.year}`,
     hWhen: 'Thời gian',
     hWhat: 'Việc cần làm',
     hSource: 'Căn cứ · Phòng phụ trách',
@@ -88,7 +89,7 @@ const vi: Messages = {
     loading: 'Đang tạo kế hoạch…',
     ask: 'Học kỳ này và học kỳ sau tôi cần làm gì?',
     footer:
-      'Dựa trên hướng dẫn công khai của Phòng Dịch vụ Du học sinh (유학생서비스팀), 2026-2학기. Đây là hướng dẫn, không phải quyết định chính thức. Vui lòng xác nhận lần cuối với Phòng Dịch vụ Du học sinh (유학생서비스팀) hoặc Cơ quan Xuất nhập cảnh (출입국·외국인관서).',
+      (t) => `Dựa trên hướng dẫn công khai của Phòng Dịch vụ Du học sinh (유학생서비스팀), ${termKo(t)}. Đây là hướng dẫn, không phải quyết định chính thức. Vui lòng xác nhận lần cuối với Phòng Dịch vụ Du học sinh (유학생서비스팀) hoặc Cơ quan Xuất nhập cảnh (출입국·외국인관서).`,
     chips: {
       d2: 'D-2',
       otherVisa: 'Visa khác',
@@ -96,8 +97,8 @@ const vi: Messages = {
       noTopik: 'Chưa có TOPIK',
       koreanTrack: 'Học bằng tiếng Hàn',
       englishTrack: 'Học bằng tiếng Anh',
-      entryAfter: 'Nhập học từ 9/2025',
-      entryBefore: 'Nhập học trước 9/2025',
+      entryAfter: (c) => `Nhập học từ ${c.month}/${c.year}`,
+      entryBefore: (c) => `Nhập học trước ${c.month}/${c.year}`,
     },
   },
   checklist: {
@@ -115,16 +116,16 @@ const vi: Messages = {
     scholarshipNote: 'Nếu không hoàn thành giáo dục bắt buộc, bạn sẽ không được nhận học bổng ở học kỳ sau.',
     back: '← Quay lại kế hoạch',
     footer:
-      'Dựa trên hướng dẫn công khai của Phòng Dịch vụ Du học sinh (유학생서비스팀), 2026-2학기. Vui lòng xác nhận lần cuối với Phòng Dịch vụ Du học sinh (유학생서비스팀) hoặc Cơ quan Xuất nhập cảnh (출입국·외국인관서).',
+      (t) => `Dựa trên hướng dẫn công khai của Phòng Dịch vụ Du học sinh (유학생서비스팀), ${termKo(t)}. Vui lòng xác nhận lần cuối với Phòng Dịch vụ Du học sinh (유학생서비스팀) hoặc Cơ quan Xuất nhập cảnh (출입국·외국인관서).`,
   },
   chat: {
     title: 'Trò chuyện với SNOW Planner',
     demo: 'Chế độ demo · câu trả lời mẫu',
     live: 'Trực tiếp · SNOWCHAT API',
-    data: 'Tài liệu 2026-2학기',
+    data: (t) => `Tài liệu ${termKo(t)}`,
     mockGreeting:
-      'Đây là kế hoạch học kỳ mùa thu 2026 của bạn. Tôi đã đưa tất cả vào kế hoạch và danh sách việc cần làm bên trái. Có 3 việc bạn cần xác nhận.',
-    mockSource: 'Căn cứ: 유학생서비스팀 사이트 (학업 · 비자 및 체류 · 장학금) · 2026-2학기',
+      (t) => `Đây là kế hoạch học kỳ ${isSpring(t) ? 'mùa xuân' : 'mùa thu'} ${t.year} của bạn. Tôi đã đưa tất cả vào kế hoạch và danh sách việc cần làm bên trái. Có 3 việc bạn cần xác nhận.`,
+    mockSource: (t) => `Căn cứ: 유학생서비스팀 사이트 (학업 · 비자 및 체류 · 장학금) · ${termKo(t)}`,
     greeting: 'Tôi sẽ trả lời dựa trên các điều kiện bạn đã nhập. Hãy hỏi tôi về học tập, lưu trú hoặc học bổng.',
     suggestions: ['Còn học kỳ sau thì sao?', 'Show in English', 'Tôi có gia hạn visa được không?'],
     askLabel: 'Nhập câu hỏi',

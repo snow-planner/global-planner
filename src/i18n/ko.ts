@@ -1,5 +1,6 @@
 // 기계 번역 초안: 원어민 검토 필요
 import type { Messages } from './en'
+import { termKo } from './format'
 
 const ko: Messages = {
   common: {
@@ -37,8 +38,8 @@ const ko: Messages = {
     topikNone: 'TOPIK 없음',
     entryLabel: '입학 시기',
     entryHint: '',
-    entryBefore: '2025년 9월 이전',
-    entryAfter: '2025년 9월 이후',
+    entryBefore: (c) => `${c.year}년 ${c.month}월 이전`,
+    entryAfter: (c) => `${c.year}년 ${c.month}월 이후`,
     trackLabel: '수업 트랙',
     trackHint: '',
     track: {
@@ -77,8 +78,8 @@ const ko: Messages = {
     plan: '학기별 필수 요건 계획표',
     updated: '대화로 업데이트됨',
     sample: '예시 데이터',
-    tabThis: '이번 학기 · 2026-2학기',
-    tabNext: '다음 학기 · 2027-1학기',
+    tabThis: (t) => `이번 학기 · ${termKo(t)}`,
+    tabNext: (t) => `다음 학기 · ${termKo(t)}`,
     hWhen: '시기',
     hWhat: '할 일',
     hSource: '근거 · 담당 부서',
@@ -86,7 +87,7 @@ const ko: Messages = {
     loading: '계획을 만드는 중…',
     ask: '이번 학기와 다음 학기에 뭘 해야 하나요?',
     footer:
-      '유학생서비스팀 공개 자료(2026-2학기) 기준 안내이며 공식 결정이 아닙니다. 최종 확인은 유학생서비스팀 또는 관할 출입국·외국인관서에서 해 주세요.',
+      (t) => `유학생서비스팀 공개 자료(${termKo(t)}) 기준 안내이며 공식 결정이 아닙니다. 최종 확인은 유학생서비스팀 또는 관할 출입국·외국인관서에서 해 주세요.`,
     chips: {
       d2: 'D-2',
       otherVisa: '기타 체류자격',
@@ -94,8 +95,8 @@ const ko: Messages = {
       noTopik: 'TOPIK 없음',
       koreanTrack: '한국어 트랙',
       englishTrack: '영어 트랙',
-      entryAfter: '2025년 9월 이후 입학',
-      entryBefore: '2025년 9월 이전 입학',
+      entryAfter: (c) => `${c.year}년 ${c.month}월 이후 입학`,
+      entryBefore: (c) => `${c.year}년 ${c.month}월 이전 입학`,
     },
   },
   checklist: {
@@ -112,15 +113,15 @@ const ko: Messages = {
     },
     scholarshipNote: '외국인유학생 필수교육을 이수하지 않으면 다음 학기 장학금 대상에서 제외돼요.',
     back: '← 계획으로 돌아가기',
-    footer: '유학생서비스팀 공개 자료(2026-2학기) 기준 안내예요. 최종 확인은 유학생서비스팀 또는 관할 출입국·외국인관서에서 해 주세요.',
+    footer: (t) => `유학생서비스팀 공개 자료(${termKo(t)}) 기준 안내예요. 최종 확인은 유학생서비스팀 또는 관할 출입국·외국인관서에서 해 주세요.`,
   },
   chat: {
     title: 'SNOW 플래너와 대화',
     demo: '데모 모드 · 예시 답변',
     live: '실시간 · SNOWCHAT API',
-    data: '2026-2학기 자료',
-    mockGreeting: '2026-2학기 계획을 만들었어요. 모든 항목을 왼쪽 계획표와 체크리스트에 넣었고, 확인이 필요한 것이 3가지 있어요.',
-    mockSource: '근거: 유학생서비스팀 사이트 (학업 · 비자 및 체류 · 장학금) · 2026-2학기',
+    data: (t) => `${termKo(t)} 자료`,
+    mockGreeting: (t) => `${termKo(t)} 계획을 만들었어요. 모든 항목을 왼쪽 계획표와 체크리스트에 넣었고, 확인이 필요한 것이 3가지 있어요.`,
+    mockSource: (t) => `근거: 유학생서비스팀 사이트 (학업 · 비자 및 체류 · 장학금) · ${termKo(t)}`,
     greeting: '입력한 조건으로 답해 드릴게요. 학업, 체류, 장학에 대해 궁금한 걸 물어보세요.',
     suggestions: ['다음 학기는?', 'Show in English', '비자 연장 가능할까요?'],
     askLabel: '질문 입력',

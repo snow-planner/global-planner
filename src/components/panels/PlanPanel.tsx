@@ -1,5 +1,6 @@
 import PanelHeader from './PanelHeader'
 import { messages } from '../../i18n'
+import { DATA_TERM, TERMS } from '../../constants'
 import { getDashboardText } from '../../i18n/dashboard'
 import type { PlanSource } from '../../services/planner'
 import type { Plan, PlanRow, Tab, ViewLang } from '../../types'
@@ -43,10 +44,10 @@ export default function PlanPanel({ lang, plan, source, tab, onTab, updated, onC
       <div className="shrink-0 px-6">
         <div className="grid grid-cols-2 gap-1 rounded-[10px] bg-surface p-1">
           <button type="button" aria-pressed={tab === 'this'} onClick={() => onTab('this')} className={tabClass(tab === 'this')}>
-            {L.tabThis}
+            {L.tabThis(TERMS.current)}
           </button>
           <button type="button" aria-pressed={tab === 'next'} onClick={() => onTab('next')} className={tabClass(tab === 'next')}>
-            {L.tabNext}
+            {L.tabNext(TERMS.next)}
           </button>
         </div>
       </div>
@@ -107,7 +108,7 @@ export default function PlanPanel({ lang, plan, source, tab, onTab, updated, onC
               </section>
             )}
 
-            <p className="mt-6 text-xs leading-relaxed text-gray-400">{L.footer}</p>
+            <p className="mt-6 text-xs leading-relaxed text-gray-400">{L.footer(DATA_TERM)}</p>
           </>
         )}
       </div>

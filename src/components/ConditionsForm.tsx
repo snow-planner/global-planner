@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react'
 import { messages } from '../i18n'
-import { LANG_OPTIONS } from '../constants'
+import { ENTRY_CUTOFF, LANG_OPTIONS } from '../constants'
 import type { Conditions, Visa } from '../types'
 
 const inputClass = 'h-10 w-full rounded-lg border border-line bg-white px-3 text-[15px] text-ink focus:border-brand focus:outline-none'
@@ -75,8 +75,8 @@ export default function ConditionsForm({ value: c, onChange: update }: { value: 
 
       <Field id="f-entry" label={T.entryLabel} hint={T.entryHint}>
         <select id="f-entry" className={inputClass} value={c.entry} onChange={(e) => update('entry', e.target.value as Conditions['entry'])}>
-          <option value="before">{T.entryBefore}</option>
-          <option value="after">{T.entryAfter}</option>
+          <option value="before">{T.entryBefore(ENTRY_CUTOFF)}</option>
+          <option value="after">{T.entryAfter(ENTRY_CUTOFF)}</option>
         </select>
       </Field>
 

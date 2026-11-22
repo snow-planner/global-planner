@@ -1,5 +1,6 @@
 // 기계 번역 초안: 원어민 검토 필요
 import type { Messages } from './en'
+import { isSpring, termKo } from './format'
 
 const zh: Messages = {
   common: {
@@ -37,8 +38,8 @@ const zh: Messages = {
     topikNone: '还没有 TOPIK',
     entryLabel: '入学时间',
     entryHint: '입학 시기',
-    entryBefore: '2025年9月以前',
-    entryAfter: '2025年9月及以后',
+    entryBefore: (c) => `${c.year}年${c.month}月以前`,
+    entryAfter: (c) => `${c.year}年${c.month}月及以后`,
     trackLabel: '授课语言',
     trackHint: '수업 트랙',
     track: {
@@ -77,8 +78,8 @@ const zh: Messages = {
     plan: '学期计划表 (학기별 계획표)',
     updated: '已根据对话更新',
     sample: '示例数据',
-    tabThis: '本学期 · 2026年秋季',
-    tabNext: '下学期 · 2027年春季',
+    tabThis: (t) => `本学期 · ${t.year}年${isSpring(t) ? '春季' : '秋季'}`,
+    tabNext: (t) => `下学期 · ${t.year}年${isSpring(t) ? '春季' : '秋季'}`,
     hWhen: '时间',
     hWhat: '要做的事',
     hSource: '依据 · 负责部门',
@@ -86,7 +87,7 @@ const zh: Messages = {
     loading: '正在制定你的计划…',
     ask: '这学期和下学期我需要做什么？',
     footer:
-      '本内容依据留学生服务组 (유학생서비스팀) 2026-2학기 公开资料，仅供参考，不是正式决定。最终情况请向留学生服务组 (유학생서비스팀) 或出入境外国人管理机关 (출입국·외국인관서) 确认。',
+      (t) => `本内容依据留学生服务组 (유학생서비스팀) ${termKo(t)} 公开资料，仅供参考，不是正式决定。最终情况请向留学生服务组 (유학생서비스팀) 或出入境外国人管理机关 (출입국·외국인관서) 确认。`,
     chips: {
       d2: 'D-2',
       otherVisa: '其他签证',
@@ -94,8 +95,8 @@ const zh: Messages = {
       noTopik: '没有 TOPIK',
       koreanTrack: '韩语授课',
       englishTrack: '英语授课',
-      entryAfter: '2025年9月及以后入学',
-      entryBefore: '2025年9月以前入学',
+      entryAfter: (c) => `${c.year}年${c.month}月及以后入学`,
+      entryBefore: (c) => `${c.year}年${c.month}月以前入学`,
     },
   },
   checklist: {
@@ -112,15 +113,15 @@ const zh: Messages = {
     },
     scholarshipNote: '如果没有完成必修教育，下学期将不能获得奖学金。',
     back: '← 返回计划',
-    footer: '本内容依据留学生服务组 (유학생서비스팀) 2026-2학기 公开资料。最终情况请向留学生服务组 (유학생서비스팀) 或出入境外国人管理机关 (출입국·외국인관서) 确认。',
+    footer: (t) => `本内容依据留学生服务组 (유학생서비스팀) ${termKo(t)} 公开资料。最终情况请向留学生服务组 (유학생서비스팀) 或出入境外国人管理机关 (출입국·외국인관서) 确认。`,
   },
   chat: {
     title: '和 SNOW 规划助手聊天',
     demo: '演示模式 · 示例回答',
     live: '实时 · SNOWCHAT API',
-    data: '2026-2학기 资料',
-    mockGreeting: '我已经做好了 2026 年秋季学期的计划。所有事项都放进了左边的计划表和清单里，有 3 件事需要你确认。',
-    mockSource: '依据：유학생서비스팀 사이트 (학업 · 비자 및 체류 · 장학금) · 2026-2학기',
+    data: (t) => `${termKo(t)} 资料`,
+    mockGreeting: (t) => `我已经做好了 ${t.year} 年${isSpring(t) ? '春季' : '秋季'}学期的计划。所有事项都放进了左边的计划表和清单里，有 3 件事需要你确认。`,
+    mockSource: (t) => `依据：유학생서비스팀 사이트 (학업 · 비자 및 체류 · 장학금) · ${termKo(t)}`,
     greeting: '我会根据你填写的条件回答。关于学业、居留、奖学金，有问题都可以问我。',
     suggestions: ['下学期呢？', 'Show in English', '我可以延长签证吗？'],
     askLabel: '输入问题',

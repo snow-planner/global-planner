@@ -1,4 +1,6 @@
 import type { ChecklistItem, Plan, ViewLang } from '../types'
+import { DATA_TERM } from '../constants'
+import { termKo } from '../i18n/format'
 
 export const SRC = {
   edu: '유학생서비스팀 사이트 > 학업 > 외국인유학생 필수교육',
@@ -9,8 +11,8 @@ export const SRC = {
   schol: '유학생서비스팀 사이트 > 캠퍼스생활 > 장학금 > 학부',
 }
 
-const OFFICE = '유학생서비스팀 · 2026-2학기'
-const OFFICE_GRAD = '학사팀 · 유학생서비스팀 · 2026-2학기'
+const OFFICE = `유학생서비스팀 · ${termKo(DATA_TERM)}`
+const OFFICE_GRAD = `학사팀 · 유학생서비스팀 · ${termKo(DATA_TERM)}`
 
 export const mockChecklist: ChecklistItem[] = [
   { id: 's1', category: 'stay', text: 'Check the D-2 expiry date on your residence card', ko: '외국인등록증', due: 'Now', source: '비자 및 체류 > 유학(D-2) 비자 연장 · 유학생서비스팀', urgent: true },
@@ -47,7 +49,7 @@ export const mockPlans: Record<'en' | 'ko', Plan> = {
     ],
     needsConfirmation: [
       'We do not know which required courses you have already completed. Check your academic record.',
-      'The 2026 TOPIK application periods in our guide have passed. Check the next test schedule.',
+      `The ${DATA_TERM.year} TOPIK application periods in our guide have passed. Check the next test schedule.`,
       'D-2 extension documents can differ by case. Confirm with 유학생서비스팀 or the immigration office (출입국·외국인관서).',
     ],
     checklist: mockChecklist,
@@ -74,7 +76,7 @@ export const mockPlans: Record<'en' | 'ko', Plan> = {
     ],
     needsConfirmation: [
       '이미 이수한 외국인 필수 과목은 확인되지 않았어요. 성적 기록에서 확인하세요.',
-      '자료에 안내된 2026년 TOPIK 접수 기간은 지났어요. 다음 시험 일정을 확인하세요.',
+      `자료에 안내된 ${DATA_TERM.year}년 TOPIK 접수 기간은 지났어요. 다음 시험 일정을 확인하세요.`,
       'D-2 연장 서류는 개인 상황에 따라 다를 수 있어요. 유학생서비스팀 또는 관할 출입국·외국인관서에 확인하세요.',
     ],
     checklist: mockChecklist,

@@ -1,6 +1,8 @@
 import type { ChatMessage, ChatReply, ChecklistItem, Conditions, Plan, ViewLang } from '../types'
 import { mockChecklist, mockPlanFor } from '../mock/plan'
 import { mockReply } from '../mock/mockChat'
+import { ENTRY_CUTOFF } from '../constants'
+import { monthName } from '../i18n/format'
 
 const USE_MOCK = import.meta.env.VITE_USE_MOCK !== 'false'
 
@@ -11,6 +13,7 @@ const LANG_NAMES: Record<Conditions['lang'], string> = {
 }
 
 function conditionsText(c: Conditions) {
+  const cutoff = `${monthName(ENTRY_CUTOFF, 'en-US')} ${ENTRY_CUTOFF.year}`
   const status = { ug: 'Undergraduate', grad: 'Graduate', exchange: 'Exchange student', lang: 'Korean language program' }[c.status]
   const visa = { d2: 'D-2', other: 'Other', none: 'Prefer not to say' }[c.visa]
   return [
@@ -22,7 +25,7 @@ function conditionsText(c: Conditions) {
     `- Visa type: ${visa}`,
     ...(c.visa === 'd2' && c.visaExpiry ? [`- Visa expiry date: ${c.visaExpiry}`] : []),
     `- Korean level: ${c.topik === '0' ? 'No TOPIK' : `TOPIK ${c.topik}`}`,
-    `- Entry: ${c.entry === 'after' ? 'From September 2025 onward' : 'Before September 2025'}`,
+    `- Entry: ${c.entry === 'after' ? `From ${cutoff} onward` : `Before ${cutoff}`}`,
     `- Course track: ${c.track === 'korean' ? 'Korean track' : 'English track'}`,
     `- Preferred language: ${LANG_NAMES[c.lang]} (use only if my question's language is unclear)`,
     'Use these conditions. Do not ask me for them again.',

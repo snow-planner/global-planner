@@ -1,8 +1,20 @@
-import type { Conditions, Lang } from './types'
+import type { Conditions, Lang, Term, YearMonth } from './types'
 
 export const STORAGE_KEYS = {
   conditions: 'snow-planner:conditions',
 } as const
+
+// 학기가 바뀌면 여기만 고쳐요
+export const TERMS = {
+  current: { year: 2026, semester: 2 },
+  next: { year: 2027, semester: 1 },
+} as const satisfies Record<'current' | 'next', Term>
+
+// 자료 기준 학기 (지금은 이번 학기와 같아요)
+export const DATA_TERM: Term = TERMS.current
+
+// 입학 시기 기준 (이 달부터 입학하면 '이후')
+export const ENTRY_CUTOFF: YearMonth = { year: 2025, month: 9 }
 
 export const defaultConditions: Conditions = {
   lang: 'en',
