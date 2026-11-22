@@ -121,7 +121,7 @@ const en = {
     title: 'Chat with SNOW Planner',
     demo: 'Demo mode · mock answers',
     live: 'Live · SNOWCHAT API',
-    data: (t: Term) => `${termKo(t)} 자료`,
+    data: (t: Term) => `${termEn(t)} data`,
     mockGreeting:
       (t: Term) => `Here is your plan for ${termEn(t)}. I put every item into the plan and checklist on the left. Three things need your confirmation.`,
     mockSource: (t: Term) => `Sources: 유학생서비스팀 사이트 (학업 · 비자 및 체류 · 장학금) · ${termKo(t)}`,

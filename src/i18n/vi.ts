@@ -122,7 +122,7 @@ const vi: Messages = {
     title: 'Trò chuyện với SNOW Planner',
     demo: 'Chế độ demo · câu trả lời mẫu',
     live: 'Trực tiếp · SNOWCHAT API',
-    data: (t) => `Tài liệu ${termKo(t)}`,
+    data: (t) => `Tài liệu học kỳ ${isSpring(t) ? 'mùa xuân' : 'mùa thu'} ${t.year}`,
     mockGreeting:
       (t) => `Đây là kế hoạch học kỳ ${isSpring(t) ? 'mùa xuân' : 'mùa thu'} ${t.year} của bạn. Tôi đã đưa tất cả vào kế hoạch và danh sách việc cần làm bên trái. Có 3 việc bạn cần xác nhận.`,
     mockSource: (t) => `Căn cứ: 유학생서비스팀 사이트 (학업 · 비자 및 체류 · 장학금) · ${termKo(t)}`,
