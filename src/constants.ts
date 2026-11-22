@@ -11,6 +11,9 @@ export const ROUTES = {
 // 비자 연장은 만료일 몇 개월 전부터 신청할 수 있는지
 export const VISA_APPLY_MONTHS_BEFORE = 4
 
+// 이 너비부터 패널을 채팅 옆에 띄워요 (Tailwind xl과 같아야 함)
+export const PANEL_INLINE_MIN_WIDTH = 1280
+
 export const STORAGE_KEYS = {
   conditions: 'snow-planner:conditions',
 } as const
