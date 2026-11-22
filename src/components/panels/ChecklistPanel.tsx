@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import PanelHeader from './PanelHeader'
 import { messages } from '../../i18n'
 import { getDashboardText } from '../../i18n/dashboard'
+import { ROUTES } from '../../constants'
 import type { ChecklistItem, ViewLang } from '../../types'
 
 type Filter = 'all' | ChecklistItem['category']
@@ -110,12 +111,12 @@ export default function ChecklistPanel({ lang, ready, items, done, onToggle, ask
         )}
 
         {ready && showScholarshipNote && (
-          <p className="mt-4 rounded-[10px] bg-[#FFF8F0] px-3.5 py-3 text-[13px] leading-relaxed text-[#7A3305]">{T.scholarshipNote}</p>
+          <p className="mt-4 rounded-[10px] bg-warn-bg px-3.5 py-3 text-[13px] leading-relaxed text-warn">{T.scholarshipNote}</p>
         )}
       </div>
 
       <div className="shrink-0 px-6 pb-6">
-        <Link to="/plan" className="flex h-11 items-center justify-center rounded-[10px] bg-surface text-[13px] font-semibold text-brand hover:bg-brand-soft">
+        <Link to={ROUTES.plan} className="flex h-11 items-center justify-center rounded-[10px] bg-surface text-[13px] font-semibold text-brand hover:bg-brand-soft">
           {D.viewPlan}
         </Link>
       </div>

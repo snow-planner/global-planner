@@ -1,6 +1,9 @@
 import type { ChatMessage, ChatReply, ChecklistItem, Conditions, Plan, ViewLang } from '../types'
 import { mockChecklist, mockPlanFor } from '../mock/plan'
 import { mockReply } from '../mock/mockChat'
+import { CHAT_HISTORY_LIMIT, ENTRY_CUTOFF } from '../constants'
+import { messages } from '../i18n'
+import { monthName } from '../i18n/format'
 
 const USE_MOCK = import.meta.env.VITE_USE_MOCK !== 'false'
 
@@ -11,6 +14,7 @@ const LANG_NAMES: Record<Conditions['lang'], string> = {
 }
 
 function conditionsText(c: Conditions) {
+  const cutoff = `${monthName(ENTRY_CUTOFF, 'en-US')} ${ENTRY_CUTOFF.year}`
   const status = { ug: 'Undergraduate', grad: 'Graduate', exchange: 'Exchange student', lang: 'Korean language program' }[c.status]
   const visa = { d2: 'D-2', other: 'Other', none: 'Prefer not to say' }[c.visa]
   return [
@@ -18,11 +22,11 @@ function conditionsText(c: Conditions) {
     `- Today: ${new Date().toLocaleDateString('sv-SE')}`,
     `- Student type: ${status}`,
     `- Year: ${c.year}`,
-    `- Major: ${c.major}`,
+    ...(c.major.trim() ? [`- Major: ${c.major.trim()}`] : []),
     `- Visa type: ${visa}`,
     ...(c.visa === 'd2' && c.visaExpiry ? [`- Visa expiry date: ${c.visaExpiry}`] : []),
     `- Korean level: ${c.topik === '0' ? 'No TOPIK' : `TOPIK ${c.topik}`}`,
-    `- Entry: ${c.entry === 'after' ? 'From September 2025 onward' : 'Before September 2025'}`,
+    `- Entry: ${c.entry === 'after' ? `From ${cutoff} onward` : `Before ${cutoff}`}`,
     `- Course track: ${c.track === 'korean' ? 'Korean track' : 'English track'}`,
     `- Preferred language: ${LANG_NAMES[c.lang]} (use only if my question's language is unclear)`,
     'Use these conditions. Do not ask me for them again.',
@@ -171,7 +175,7 @@ export async function sendMessage(history: ChatMessage[], lang: ViewLang, condit
   }
 
   // 서버는 최대 30개까지만 받아서 최근 20개만 보내요 (맨 앞은 사용자 질문이 되게 맞춤)
-  let real = history.filter((m) => !m.local).map((m) => ({ ...m })).slice(-20)
+  let real = history.filter((m) => !m.local).map((m) => ({ ...m })).slice(-CHAT_HISTORY_LIMIT)
   while (real.length > 0 && real[0].role !== 'user') real = real.slice(1)
   if (real.length > 0) {
     real[0].text = `${conditionsText(conditions)}\n\n${real[0].text}`
@@ -192,20 +196,14 @@ export async function sendMessage(history: ChatMessage[], lang: ViewLang, condit
     })
 
     if (res.status === 401) {
-      return {
-        text: lang === 'ko'
-          ? '접근 코드가 없어서 답변할 수 없어요. 받은 링크(?code=...)로 다시 들어와 주세요.'
-          : 'An access code is required. Please open the link you received (with ?code=...).',
-      }
+      return { text: messages[lang].chat.errorNoCode }
     }
     if (!res.ok) throw new Error(String(res.status))
 
     const data = await res.json()
     return { text: data.text }
   } catch {
-    return {
-      text: lang === 'ko' ? '답변을 가져오지 못했어요. 잠시 후 다시 시도해 주세요.' : 'Could not get an answer. Please try again.',
-    }
+    return { text: messages[lang].chat.errorFailed }
   }
 }
 

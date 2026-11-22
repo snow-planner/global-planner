@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom'
 import { ChatIcon, ChecklistIcon, PlanIcon, SettingsIcon, SnowMark } from '../icons'
 import { messages } from '../../i18n'
 import { getDashboardText } from '../../i18n/dashboard'
-import { LANG_OPTIONS } from '../../constants'
+import { LANG_OPTIONS, ROUTES } from '../../constants'
 import type { Conditions, Panel, ViewLang } from '../../types'
 
 interface Props {
@@ -35,7 +35,7 @@ export default function Sidebar({ conditions: c, lang, panel, editing, remaining
 
   return (
     <aside className="hidden w-60 shrink-0 flex-col overflow-y-auto border-r border-line bg-white lg:flex">
-      <Link to="/chat" className="flex items-center gap-3 px-6 pb-6 pt-7 short:pb-4 short:pt-5">
+      <Link to={ROUTES.chat} className="flex items-center gap-3 px-6 pb-6 pt-7 short:pb-4 short:pt-5">
         <SnowMark />
         <span className="flex min-w-0 flex-col leading-tight">
           <span className="truncate text-xs text-gray-500">{D.brandSub}</span>
@@ -45,16 +45,16 @@ export default function Sidebar({ conditions: c, lang, panel, editing, remaining
 
       <p className="px-6 pb-2 text-[11px] font-semibold tracking-wider text-gray-400">{D.menu}</p>
       <nav aria-label={D.menu} className="flex flex-col gap-2 px-4">
-        <Link to="/chat" className={`${item} ${styles.main}`}>
+        <Link to={ROUTES.chat} className={`${item} ${styles.main}`}>
           <ChatIcon />
           {D.nav.chat}
         </Link>
         {/* 열린 패널을 다시 누르면 닫혀요 */}
-        <Link to={panel === 'plan' ? '/chat' : '/plan'} aria-current={panel === 'plan' ? 'page' : undefined} className={`${item} ${panel === 'plan' ? styles.open : styles.idle}`}>
+        <Link to={panel === 'plan' ? ROUTES.chat : ROUTES.plan} aria-current={panel === 'plan' ? 'page' : undefined} className={`${item} ${panel === 'plan' ? styles.open : styles.idle}`}>
           <PlanIcon />
           {D.nav.plan}
         </Link>
-        <Link to={panel === 'checklist' ? '/chat' : '/checklist'} aria-current={panel === 'checklist' ? 'page' : undefined} className={`${item} ${panel === 'checklist' ? styles.open : styles.idle}`}>
+        <Link to={panel === 'checklist' ? ROUTES.chat : ROUTES.checklist} aria-current={panel === 'checklist' ? 'page' : undefined} className={`${item} ${panel === 'checklist' ? styles.open : styles.idle}`}>
           <ChecklistIcon />
           {D.nav.checklist}
           {remaining > 0 && (

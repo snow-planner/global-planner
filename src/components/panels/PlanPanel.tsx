@@ -1,5 +1,6 @@
 import PanelHeader from './PanelHeader'
 import { messages } from '../../i18n'
+import { DATA_TERM, TERMS } from '../../constants'
 import { getDashboardText } from '../../i18n/dashboard'
 import type { PlanSource } from '../../services/planner'
 import type { Plan, PlanRow, Tab, ViewLang } from '../../types'
@@ -37,16 +38,16 @@ export default function PlanPanel({ lang, plan, source, tab, onTab, updated, onC
     <div className="flex h-full min-h-0 flex-col">
       <PanelHeader title={D.planTitle} closeLabel={D.close} onClose={onClose}>
         {plan && source === 'fallback' && <span className="rounded-full bg-gray-100 px-2.5 py-1 text-xs font-medium text-gray-600">{L.sample}</span>}
-        {updated && <span className="rounded-full bg-[#E7F6EC] px-2.5 py-1 text-xs font-medium text-[#146C2E]">{L.updated}</span>}
+        {updated && <span className="rounded-full bg-success-bg px-2.5 py-1 text-xs font-medium text-success">{L.updated}</span>}
       </PanelHeader>
 
       <div className="shrink-0 px-6">
         <div className="grid grid-cols-2 gap-1 rounded-[10px] bg-surface p-1">
           <button type="button" aria-pressed={tab === 'this'} onClick={() => onTab('this')} className={tabClass(tab === 'this')}>
-            {L.tabThis}
+            {L.tabThis(TERMS.current)}
           </button>
           <button type="button" aria-pressed={tab === 'next'} onClick={() => onTab('next')} className={tabClass(tab === 'next')}>
-            {L.tabNext}
+            {L.tabNext(TERMS.next)}
           </button>
         </div>
       </div>
@@ -97,9 +98,9 @@ export default function PlanPanel({ lang, plan, source, tab, onTab, updated, onC
             </ol>
 
             {plan.needsConfirmation.length > 0 && (
-              <section aria-label={L.confirm} className="mt-6 rounded-xl border border-[#F5C99B] bg-[#FFF8F0] p-4">
-                <h3 className="text-sm font-bold text-[#7A3305]">{L.confirm}</h3>
-                <ul className="mt-2 flex list-disc flex-col gap-1 pl-5 text-[13px] leading-relaxed text-[#5C2804]">
+              <section aria-label={L.confirm} className="mt-6 rounded-xl border border-warn-line bg-warn-bg p-4">
+                <h3 className="text-sm font-bold text-warn">{L.confirm}</h3>
+                <ul className="mt-2 flex list-disc flex-col gap-1 pl-5 text-[13px] leading-relaxed text-warn-strong">
                   {plan.needsConfirmation.map((t) => (
                     <li key={t}>{t}</li>
                   ))}
@@ -107,7 +108,7 @@ export default function PlanPanel({ lang, plan, source, tab, onTab, updated, onC
               </section>
             )}
 
-            <p className="mt-6 text-xs leading-relaxed text-gray-400">{L.footer}</p>
+            <p className="mt-6 text-xs leading-relaxed text-gray-400">{L.footer(DATA_TERM)}</p>
           </>
         )}
       </div>

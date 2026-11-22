@@ -4,6 +4,7 @@ import remarkGfm from 'remark-gfm'
 import { isMockMode, sendMessage } from '../services/planner'
 import { messages as dict } from '../i18n'
 import { getDashboardText } from '../i18n/dashboard'
+import { DATA_TERM, TERMS } from '../constants'
 import { parseChoices } from '../utils/choices'
 import { ChevronRightIcon, SendIcon, SnowMark } from './icons'
 import type { ChatAction, ChatMessage, Conditions, ViewLang } from '../types'
@@ -50,7 +51,7 @@ export default function ChatPanel({ lang, summary, chips, conditions, onAction, 
     mock
       ? [
           { role: 'user', text: summary, local: true },
-          { role: 'bot', local: true, text: T.mockGreeting, source: T.mockSource },
+          { role: 'bot', local: true, text: T.mockGreeting(TERMS.current), source: T.mockSource(DATA_TERM) },
         ]
       : [{ role: 'bot', local: true, text: T.greeting }]
 
@@ -116,8 +117,8 @@ export default function ChatPanel({ lang, summary, chips, conditions, onAction, 
     <section aria-label={T.title} className="flex min-h-0 flex-1 flex-col">
       <div className="flex shrink-0 items-center justify-between gap-3 px-4 pt-4 lg:px-8">
         <p className="flex items-center gap-2 text-xs text-gray-500">
-          <span className={`h-2 w-2 rounded-full ${mock ? 'bg-gray-400' : 'bg-[#1F9D55]'}`} aria-hidden="true" />
-          {mock ? T.demo : T.live} · {T.data}
+          <span className={`h-2 w-2 rounded-full ${mock ? 'bg-gray-400' : 'bg-live'}`} aria-hidden="true" />
+          {mock ? T.demo : T.live} · {T.data(DATA_TERM)}
         </p>
         {started && (
           <button

@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import { ChatIcon, ChecklistIcon, PlanIcon, SettingsIcon } from '../icons'
 import { getDashboardText } from '../../i18n/dashboard'
+import { ROUTES } from '../../constants'
 import type { Panel, ViewLang } from '../../types'
 
 interface Props {
@@ -20,15 +21,15 @@ export default function BottomNav({ lang, panel, editing, remaining, onEditCondi
 
   return (
     <nav aria-label={D.menu} className="grid shrink-0 grid-cols-4 border-t border-line bg-white lg:hidden">
-      <Link to="/chat" className={`${tab} ${!panel && !editing ? on : off}`}>
+      <Link to={ROUTES.chat} className={`${tab} ${!panel && !editing ? on : off}`}>
         <ChatIcon />
         {D.nav.chat}
       </Link>
-      <Link to="/plan" className={`${tab} ${panel === 'plan' ? on : off}`}>
+      <Link to={ROUTES.plan} className={`${tab} ${panel === 'plan' ? on : off}`}>
         <PlanIcon />
         {D.nav.plan}
       </Link>
-      <Link to="/checklist" className={`${tab} ${panel === 'checklist' ? on : off}`}>
+      <Link to={ROUTES.checklist} className={`${tab} ${panel === 'checklist' ? on : off}`}>
         <ChecklistIcon />
         {D.nav.checklist}
         {remaining > 0 && (
