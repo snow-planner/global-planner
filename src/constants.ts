@@ -8,6 +8,9 @@ export const ROUTES = {
   checklist: '/checklist',
 } as const
 
+// 비자 연장은 만료일 몇 개월 전부터 신청할 수 있는지
+export const VISA_APPLY_MONTHS_BEFORE = 4
+
 export const STORAGE_KEYS = {
   conditions: 'snow-planner:conditions',
 } as const
