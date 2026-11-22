@@ -129,6 +129,8 @@ const ko: Messages = {
     send: '보내기',
     thinking: '답변을 만드는 중…',
     newChat: '새 대화',
+    errorNoCode: '접근 코드가 없어서 답변할 수 없어요. 받은 링크(?code=...)로 다시 들어와 주세요.',
+    errorFailed: '답변을 가져오지 못했어요. 잠시 후 다시 시도해 주세요.',
   },
 }
 

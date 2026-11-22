@@ -133,6 +133,8 @@ const vi: Messages = {
     send: 'Gửi',
     thinking: 'Đang trả lời…',
     newChat: 'Cuộc trò chuyện mới',
+    errorNoCode: 'Cần có mã truy cập. Vui lòng mở lại đường link bạn đã nhận (có ?code=...).',
+    errorFailed: 'Không lấy được câu trả lời. Vui lòng thử lại sau.',
   },
 }
 

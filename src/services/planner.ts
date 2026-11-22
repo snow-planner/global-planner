@@ -2,6 +2,7 @@ import type { ChatMessage, ChatReply, ChecklistItem, Conditions, Plan, ViewLang 
 import { mockChecklist, mockPlanFor } from '../mock/plan'
 import { mockReply } from '../mock/mockChat'
 import { ENTRY_CUTOFF } from '../constants'
+import { messages } from '../i18n'
 import { monthName } from '../i18n/format'
 
 const USE_MOCK = import.meta.env.VITE_USE_MOCK !== 'false'
@@ -195,20 +196,14 @@ export async function sendMessage(history: ChatMessage[], lang: ViewLang, condit
     })
 
     if (res.status === 401) {
-      return {
-        text: lang === 'ko'
-          ? '접근 코드가 없어서 답변할 수 없어요. 받은 링크(?code=...)로 다시 들어와 주세요.'
-          : 'An access code is required. Please open the link you received (with ?code=...).',
-      }
+      return { text: messages[lang].chat.errorNoCode }
     }
     if (!res.ok) throw new Error(String(res.status))
 
     const data = await res.json()
     return { text: data.text }
   } catch {
-    return {
-      text: lang === 'ko' ? '답변을 가져오지 못했어요. 잠시 후 다시 시도해 주세요.' : 'Could not get an answer. Please try again.',
-    }
+    return { text: messages[lang].chat.errorFailed }
   }
 }
 

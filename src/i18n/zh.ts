@@ -129,6 +129,8 @@ const zh: Messages = {
     send: '发送',
     thinking: '正在回答…',
     newChat: '新对话',
+    errorNoCode: '没有访问码，无法回答。请通过收到的链接（?code=...）重新进入。',
+    errorFailed: '未能获取回答。请稍后再试。',
   },
 }
 

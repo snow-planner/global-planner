@@ -132,6 +132,8 @@ const en = {
     send: 'Send',
     thinking: 'Thinking…',
     newChat: 'New chat',
+    errorNoCode: 'An access code is required. Please open the link you received (with ?code=...).',
+    errorFailed: 'Could not get an answer. Please try again.',
   },
 }
 
