@@ -120,7 +120,7 @@ const zh: Messages = {
     demo: '演示模式 · 示例回答',
     live: '实时 · SNOWCHAT API',
     data: (t) => `${t.year}年${isSpring(t) ? '春季' : '秋季'}资料`,
-    mockGreeting: (t) => `我已经做好了 ${t.year} 年${isSpring(t) ? '春季' : '秋季'}学期的计划。所有事项都放进了左边的计划表和清单里，有 3 件事需要你确认。`,
+    mockGreeting: (t) => `我已经做好了 ${t.year} 年${isSpring(t) ? '春季' : '秋季'}学期的计划。所有事项都放进了右侧面板的计划表和清单里，有 3 件事需要你确认。`,
     mockSource: (t) => `依据：유학생서비스팀 사이트 (학업 · 비자 및 체류 · 장학금) · ${termKo(t)}`,
     greeting: '我会根据你填写的条件回答。关于学业、居留、奖学金，有问题都可以问我。',
     suggestions: ['下学期呢？', 'Show in English', '我可以延长签证吗？'],

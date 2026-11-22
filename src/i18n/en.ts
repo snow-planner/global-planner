@@ -123,7 +123,7 @@ const en = {
     live: 'Live · SNOWCHAT API',
     data: (t: Term) => `${termEn(t)} data`,
     mockGreeting:
-      (t: Term) => `Here is your plan for ${termEn(t)}. I put every item into the plan and checklist on the left. Three things need your confirmation.`,
+      (t: Term) => `Here is your plan for ${termEn(t)}. I put every item into the plan and checklist in the right panel. Three things need your confirmation.`,
     mockSource: (t: Term) => `Sources: 유학생서비스팀 사이트 (학업 · 비자 및 체류 · 장학금) · ${termKo(t)}`,
     greeting: 'I will answer based on the conditions you entered. Ask me anything about academics, stay, or scholarships.',
     suggestions: ['What about next semester?', '한국어로 보여줘', 'Can I extend my visa?'],

@@ -124,7 +124,7 @@ const vi: Messages = {
     live: 'Trực tiếp · SNOWCHAT API',
     data: (t) => `Tài liệu học kỳ ${isSpring(t) ? 'mùa xuân' : 'mùa thu'} ${t.year}`,
     mockGreeting:
-      (t) => `Đây là kế hoạch học kỳ ${isSpring(t) ? 'mùa xuân' : 'mùa thu'} ${t.year} của bạn. Tôi đã đưa tất cả vào kế hoạch và danh sách việc cần làm bên trái. Có 3 việc bạn cần xác nhận.`,
+      (t) => `Đây là kế hoạch học kỳ ${isSpring(t) ? 'mùa xuân' : 'mùa thu'} ${t.year} của bạn. Tôi đã đưa tất cả vào kế hoạch và danh sách việc cần làm ở bảng bên phải. Có 3 việc bạn cần xác nhận.`,
     mockSource: (t) => `Căn cứ: 유학생서비스팀 사이트 (학업 · 비자 및 체류 · 장학금) · ${termKo(t)}`,
     greeting: 'Tôi sẽ trả lời dựa trên các điều kiện bạn đã nhập. Hãy hỏi tôi về học tập, lưu trú hoặc học bổng.',
     suggestions: ['Còn học kỳ sau thì sao?', 'Show in English', 'Tôi có gia hạn visa được không?'],

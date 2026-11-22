@@ -120,7 +120,7 @@ const ko: Messages = {
     demo: '데모 모드 · 예시 답변',
     live: '실시간 · SNOWCHAT API',
     data: (t) => `${termKo(t)} 자료`,
-    mockGreeting: (t) => `${termKo(t)} 계획을 만들었어요. 모든 항목을 왼쪽 계획표와 체크리스트에 넣었고, 확인이 필요한 것이 3가지 있어요.`,
+    mockGreeting: (t) => `${termKo(t)} 계획을 만들었어요. 모든 항목을 오른쪽 패널의 계획표와 체크리스트에 넣었고, 확인이 필요한 것이 3가지 있어요.`,
     mockSource: (t) => `근거: 유학생서비스팀 사이트 (학업 · 비자 및 체류 · 장학금) · ${termKo(t)}`,
     greeting: '입력한 조건으로 답해 드릴게요. 학업, 체류, 장학에 대해 궁금한 걸 물어보세요.',
     suggestions: ['다음 학기는?', 'Show in English', '비자 연장 가능할까요?'],
