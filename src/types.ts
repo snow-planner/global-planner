@@ -2,6 +2,7 @@ export type Lang = 'en' | 'ko' | 'zh' | 'vi' | 'my' | 'mn'
 export type ViewLang = Lang
 export type Visa = 'd2' | 'other' | 'none'
 export type Tab = 'this' | 'next'
+export type Panel = 'plan' | 'checklist' | null // 오른쪽에 열린 패널 (null이면 채팅만)
 
 export interface Conditions {
   lang: Lang
