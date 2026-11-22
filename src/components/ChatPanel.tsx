@@ -117,7 +117,7 @@ export default function ChatPanel({ lang, summary, chips, conditions, onAction, 
     <section aria-label={T.title} className="flex min-h-0 flex-1 flex-col">
       <div className="flex shrink-0 items-center justify-between gap-3 px-4 pt-4 lg:px-8">
         <p className="flex items-center gap-2 text-xs text-gray-500">
-          <span className={`h-2 w-2 rounded-full ${mock ? 'bg-gray-400' : 'bg-[#1F9D55]'}`} aria-hidden="true" />
+          <span className={`h-2 w-2 rounded-full ${mock ? 'bg-gray-400' : 'bg-live'}`} aria-hidden="true" />
           {mock ? T.demo : T.live} · {T.data(DATA_TERM)}
         </p>
         {started && (

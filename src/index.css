@@ -15,6 +15,17 @@
   --color-ink: #1A1F36;
   --color-alert: #D93036;
   --color-alert-soft: #FDECEC;
+
+  /* 주의 안내 (확인 필요 · 장학 안내) */
+  --color-warn-bg: #FFF8F0;
+  --color-warn-line: #F5C99B;
+  --color-warn: #7A3305;
+  --color-warn-strong: #5C2804;
+
+  /* 성공 · 실시간 표시 */
+  --color-success-bg: #E7F6EC;
+  --color-success: #146C2E;
+  --color-live: #1F9D55;
 }
 
 body {
