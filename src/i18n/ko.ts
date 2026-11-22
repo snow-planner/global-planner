@@ -31,6 +31,7 @@ const ko: Messages = {
     yearHint: '',
     majorLabel: '전공',
     majorHint: '',
+    majorPlaceholder: '예: 경영학부',
     topikLabel: '한국어 수준',
     topikHint: '',
     topikNone: 'TOPIK 없음',

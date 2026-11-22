@@ -31,6 +31,7 @@ const zh: Messages = {
     yearHint: '학년',
     majorLabel: '专业',
     majorHint: '전공',
+    majorPlaceholder: '例如：经营学部',
     topikLabel: '韩语水平',
     topikHint: '한국어 수준',
     topikNone: '还没有 TOPIK',

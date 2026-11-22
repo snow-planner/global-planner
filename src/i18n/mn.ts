@@ -32,6 +32,7 @@ const mn: Messages = {
     yearHint: '학년',
     majorLabel: 'Мэргэжил',
     majorHint: '전공',
+    majorPlaceholder: 'Жишээ нь: Бизнесийн удирдлага',
     topikLabel: 'Солонгос хэлний түвшин',
     topikHint: '한국어 수준',
     topikNone: 'TOPIK байхгүй',

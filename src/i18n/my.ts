@@ -32,6 +32,7 @@ const my: Messages = {
     yearHint: '학년',
     majorLabel: 'အဓိက ဘာသာရပ်',
     majorHint: '전공',
+    majorPlaceholder: 'ဥပမာ - စီးပွားရေး စီမံခန့်ခွဲမှု',
     topikLabel: 'ကိုရီးယားဘာသာ အဆင့်',
     topikHint: '한국어 수준',
     topikNone: 'TOPIK မရှိသေးပါ',

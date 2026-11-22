@@ -32,6 +32,7 @@ const vi: Messages = {
     yearHint: '학년',
     majorLabel: 'Chuyên ngành',
     majorHint: '전공',
+    majorPlaceholder: 'Ví dụ: Quản trị kinh doanh',
     topikLabel: 'Trình độ tiếng Hàn',
     topikHint: '한국어 수준',
     topikNone: 'Chưa có TOPIK',

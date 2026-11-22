@@ -59,7 +59,7 @@ export default function ConditionsForm({ value: c, onChange: update }: { value: 
       </Field>
 
       <Field id="f-major" label={T.majorLabel} hint={T.majorHint}>
-        <input id="f-major" type="text" className={inputClass} value={c.major} onChange={(e) => update('major', e.target.value)} />
+        <input id="f-major" type="text" className={inputClass} placeholder={T.majorPlaceholder} value={c.major} onChange={(e) => update('major', e.target.value)} />
       </Field>
 
       <Field id="f-topik" label={T.topikLabel} hint={T.topikHint}>

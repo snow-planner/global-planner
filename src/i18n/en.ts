@@ -30,6 +30,7 @@ const en = {
     yearHint: '학년',
     majorLabel: 'Major',
     majorHint: '전공',
+    majorPlaceholder: 'e.g. Business Administration',
     topikLabel: 'Korean level',
     topikHint: '한국어 수준',
     topikNone: 'No TOPIK yet',

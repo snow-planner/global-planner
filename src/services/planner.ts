@@ -18,7 +18,7 @@ function conditionsText(c: Conditions) {
     `- Today: ${new Date().toLocaleDateString('sv-SE')}`,
     `- Student type: ${status}`,
     `- Year: ${c.year}`,
-    `- Major: ${c.major}`,
+    ...(c.major.trim() ? [`- Major: ${c.major.trim()}`] : []),
     `- Visa type: ${visa}`,
     ...(c.visa === 'd2' && c.visaExpiry ? [`- Visa expiry date: ${c.visaExpiry}`] : []),
     `- Korean level: ${c.topik === '0' ? 'No TOPIK' : `TOPIK ${c.topik}`}`,

@@ -8,12 +8,12 @@ export const defaultConditions: Conditions = {
   lang: 'en',
   status: 'ug',
   year: '2',
-  major: 'Business Administration',
+  major: '',
   topik: '3',
   entry: 'after',
   track: 'korean',
   visa: 'd2',
-  visaExpiry: '2027-03-10',
+  visaExpiry: '', // 비어 있으면 D-day를 숨기고 챗봇에도 안 보내요
 }
 
 export const defaultChecklistDone: Record<string, boolean> = {}
