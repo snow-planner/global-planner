@@ -1,152 +1,100 @@
-import type { ReactNode } from 'react'
 import { Link } from 'react-router-dom'
-import Header from '../components/Header'
+import ConditionsForm, { type UpdateCondition } from '../components/ConditionsForm'
+import { CheckIcon, LockIcon, SendIcon, SnowMark } from '../components/icons'
 import { useLocalStorage } from '../hooks/useLocalStorage'
+import { useHtmlLang } from '../hooks/useHtmlLang'
 import { defaultConditions, STORAGE_KEYS } from '../constants'
 import { messages } from '../i18n'
-import type { Conditions, Visa } from '../types'
+import { getDashboardText } from '../i18n/dashboard'
+import type { Conditions } from '../types'
 
-const inputClass = 'h-12 rounded-[10px] border border-gray-300 bg-white px-3 text-base text-gray-900'
-
-const visaIds: Visa[] = ['d2', 'other', 'none']
-
-// hint: 한국어 공식 용어 (한국어 화면에서는 빈 문자열이라 안 보여요)
-function Field({ id, label, hint, children }: { id: string; label: string; hint: string; children: ReactNode }) {
-  return (
-    <div className="flex flex-col gap-2">
-      <label htmlFor={id} className="text-sm font-medium">
-        {label} {hint && <span className="font-normal text-gray-600">{hint}</span>}
-      </label>
-      {children}
-    </div>
-  )
-}
-
+// 처음 들어왔을 때 조건 입력 (왼쪽 소개 + 오른쪽 폼 카드)
+// 화면 높이에 맞추고, 내용이 넘치면 오른쪽만 스크롤 · 아래 버튼 줄은 항상 보이게
 export default function ConditionsPage() {
   const [c, setC] = useLocalStorage<Conditions>(STORAGE_KEYS.conditions, defaultConditions)
+  const update: UpdateCondition = (key, value) => setC((prev) => ({ ...prev, [key]: value }))
+  const T = messages[c.lang].conditions
+  const D = getDashboardText(c.lang)
 
-  const update = <K extends keyof Conditions>(key: K, value: Conditions[K]) =>
-    setC((prev) => ({ ...prev, [key]: value }))
+  useHtmlLang(c.lang)
 
-  const { common, conditions: T } = messages[c.lang]
+  // 개인정보 안내: 데스크톱은 왼쪽 파란 영역, 모바일은 폼 아래
+  const privacy = (dark: boolean) => (
+    <div role="note" aria-label={T.privacyTitle} className={`flex items-start gap-3 rounded-xl px-4 py-3.5 ${dark ? 'bg-white/10' : 'bg-brand-soft'}`}>
+      <LockIcon className={`mt-0.5 h-5 w-5 shrink-0 ${dark ? 'text-white' : 'text-brand'}`} />
+      <div className="flex flex-col gap-1">
+        <p className={`text-[13px] font-bold ${dark ? 'text-white' : 'text-brand'}`}>{T.privacyTitle}</p>
+        <p className={`text-xs leading-relaxed ${dark ? 'text-white/70' : 'text-gray-700'}`}>{T.privacyBody}</p>
+      </div>
+    </div>
+  )
 
   return (
-    <div className="min-h-screen">
-      <Header lang={c.lang} />
-      <main className="mx-auto flex max-w-[1120px] flex-col gap-6 px-6 pb-16 pt-10">
-        <div className="flex flex-col gap-2">
-          <p className="text-sm font-medium text-brand">{T.step}</p>
-          <h1 className="text-[32px] font-bold leading-snug">{T.title}</h1>
-          <p className="max-w-[720px] text-base leading-relaxed text-gray-600">{T.intro}</p>
+    <div className="flex h-dvh overflow-hidden">
+      <aside className="hidden w-[400px] shrink-0 flex-col overflow-y-auto bg-brand px-12 py-12 text-white lg:flex xl:w-[440px] short:px-10 short:py-8">
+        <div className="flex items-center gap-3">
+          <SnowMark size={44} inverted />
+          <span className="flex flex-col leading-tight">
+            <span className="text-[13px] text-white/70">{D.brandSub}</span>
+            <span className="text-lg font-bold">{D.brand}</span>
+          </span>
         </div>
 
-        <section aria-label={T.section} className="grid grid-cols-[repeat(auto-fit,minmax(280px,1fr))] gap-6 rounded-2xl border border-gray-200 bg-white p-8">
-          <Field id="f-lang" label={T.langLabel} hint={T.langHint}>
-            <select id="f-lang" className={inputClass} value={c.lang} onChange={(e) => update('lang', e.target.value as Conditions['lang'])}>
-              <option value="en">English</option>
-              <option value="ko">한국어</option>
-              <option value="zh">中文</option>
-              <option value="vi">Tiếng Việt</option>
-              <option value="my">မြန်မာ</option>
-              <option value="mn">Монгол</option>
-            </select>
-          </Field>
+        <div className="my-auto flex flex-col gap-5 py-8 short:gap-4 short:py-6">
+          <p className="whitespace-pre-line text-[32px] font-bold leading-tight 2xl:text-[40px] short:text-[26px]">{D.heroTitle}</p>
+          <p className="text-[15px] leading-relaxed text-white/75 short:hidden">{T.intro}</p>
+          <ul className="mt-2 flex flex-col gap-3 short:mt-0">
+            {D.heroFeatures.map((f) => (
+              <li key={f} className="flex items-center gap-3 text-[15px] font-semibold">
+                <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-white/15">
+                  <CheckIcon className="h-4 w-4" />
+                </span>
+                {f}
+              </li>
+            ))}
+          </ul>
+        </div>
 
-          <Field id="f-status" label={T.statusLabel} hint={T.statusHint}>
-            <select id="f-status" className={inputClass} value={c.status} onChange={(e) => update('status', e.target.value as Conditions['status'])}>
-              <option value="ug">{T.status.ug}</option>
-              <option value="grad">{T.status.grad}</option>
-              <option value="exchange">{T.status.exchange}</option>
-              <option value="lang">{T.status.lang}</option>
-            </select>
-          </Field>
+        <div className="flex flex-col gap-4">
+          {privacy(true)}
+          <p className="text-xs text-white/60">{D.footer}</p>
+        </div>
+      </aside>
 
-          <Field id="f-year" label={T.yearLabel} hint={T.yearHint}>
-            <select id="f-year" className={inputClass} value={c.year} onChange={(e) => update('year', e.target.value)}>
-              {[1, 2, 3, 4].map((n) => (
-                <option key={n} value={String(n)}>{common.year(n)}</option>
-              ))}
-            </select>
-          </Field>
-
-          <Field id="f-major" label={T.majorLabel} hint={T.majorHint}>
-            <input id="f-major" type="text" className={inputClass} value={c.major} onChange={(e) => update('major', e.target.value)} />
-          </Field>
-
-          <Field id="f-topik" label={T.topikLabel} hint={T.topikHint}>
-            <select id="f-topik" className={inputClass} value={c.topik} onChange={(e) => update('topik', e.target.value)}>
-              <option value="0">{T.topikNone}</option>
-              {[1, 2, 3, 4, 5, 6].map((n) => (
-                <option key={n} value={String(n)}>{common.topik(n)}</option>
-              ))}
-            </select>
-          </Field>
-
-          <Field id="f-entry" label={T.entryLabel} hint={T.entryHint}>
-            <select id="f-entry" className={inputClass} value={c.entry} onChange={(e) => update('entry', e.target.value as Conditions['entry'])}>
-              <option value="before">{T.entryBefore}</option>
-              <option value="after">{T.entryAfter}</option>
-            </select>
-          </Field>
-
-          <Field id="f-track" label={T.trackLabel} hint={T.trackHint}>
-            <select id="f-track" className={inputClass} value={c.track} onChange={(e) => update('track', e.target.value as Conditions['track'])}>
-              <option value="korean">{T.track.korean}</option>
-              <option value="english">{T.track.english}</option>
-            </select>
-          </Field>
-
-          <fieldset className="col-span-full flex flex-col gap-2.5">
-            <legend className="mb-2.5 text-sm font-medium">
-              {T.visaLabel} {T.visaHint && <span className="font-normal text-gray-600">{T.visaHint}</span>}
-            </legend>
-            <div className="flex flex-wrap gap-2.5">
-              {visaIds.map((id) => {
-                const selected = c.visa === id
-                return (
-                  <button
-                    key={id}
-                    type="button"
-                    aria-pressed={selected}
-                    onClick={() => update('visa', id)}
-                    className={`min-h-12 cursor-pointer rounded-full px-5 text-[15px] ${
-                      selected ? 'border-2 border-brand bg-brand-soft font-bold text-brand-dark' : 'border border-gray-300 bg-white text-gray-700'
-                    }`}
-                  >
-                    {T.visa[id]}
-                  </button>
-                )
-              })}
+      <main className="flex min-w-0 flex-1 flex-col">
+        {/* 화면이 넉넉하면 가운데 정렬, 모자라면 위에서부터 스크롤 (my-auto) */}
+        <div className="flex min-h-0 flex-1 flex-col overflow-y-auto px-6 py-10 lg:px-12 short:py-5">
+          <div className="mx-auto my-auto flex w-full max-w-[760px] flex-col gap-6 short:gap-4">
+            <div className="flex items-center gap-3 lg:hidden">
+              <SnowMark size={36} />
+              <span className="text-base font-bold">{D.brand}</span>
             </div>
-            <p className="text-[13px] leading-relaxed text-gray-600">{T.visaNote}</p>
-          </fieldset>
 
-          {c.visa === 'd2' && (
-            <Field id="f-expiry" label={T.expiryLabel} hint={T.expiryHint}>
-              <input id="f-expiry" type="date" className={inputClass} value={c.visaExpiry} onChange={(e) => update('visaExpiry', e.target.value)} />
-            </Field>
-          )}
-        </section>
+            <div className="flex flex-col gap-2">
+              <h1 className="text-2xl font-bold leading-snug xl:text-[28px] short:text-[22px]">{T.title}</h1>
+              <p className="text-[15px] leading-relaxed text-gray-500 lg:hidden">{T.intro}</p>
+            </div>
 
-        <section aria-label={T.privacyTitle} className="flex items-start gap-3.5 rounded-xl border border-[#C9D5F7] bg-brand-soft px-6 py-5">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1B3489" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" className="mt-0.5 shrink-0">
-            <rect x="5" y="11" width="14" height="10" rx="2" />
-            <path d="M8 11V7a4 4 0 0 1 8 0v4" />
-          </svg>
-          <div className="flex flex-col gap-1">
-            <p className="text-[15px] font-bold text-brand-dark">{T.privacyTitle}</p>
-            <p className="text-sm leading-relaxed text-[#1F2A55]">{T.privacyBody}</p>
+            <section aria-label={T.section} className="rounded-2xl border border-line bg-white p-5 sm:p-8 short:sm:p-6">
+              <ConditionsForm value={c} onChange={update} />
+            </section>
+
+            <div className="lg:hidden">{privacy(false)}</div>
           </div>
-        </section>
+        </div>
 
-        <div className="flex flex-wrap items-center gap-4">
-          <Link to="/plan" className="inline-flex min-h-[52px] items-center gap-2 rounded-xl bg-brand px-7 text-base font-bold text-white hover:bg-brand-dark">
-            {T.submit}
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-              <path d="M5 12h14M13 6l6 6-6 6" />
-            </svg>
-          </Link>
-          <p className="text-sm text-gray-600">{T.changeLater}</p>
+        {/* 버튼 줄은 스크롤과 상관없이 항상 아래에 */}
+        <div className="shrink-0 border-t border-line bg-white px-6 py-4 lg:px-12 short:py-3">
+          <div className="mx-auto flex w-full max-w-[760px] items-center justify-between gap-4">
+            <p className="hidden text-sm text-gray-500 sm:block">{T.changeLater}</p>
+            <Link
+              to="/plan"
+              className="inline-flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-brand px-7 text-[15px] font-bold text-white hover:bg-brand-dark sm:w-auto"
+            >
+              {T.submit}
+              <SendIcon />
+            </Link>
+          </div>
         </div>
       </main>
     </div>

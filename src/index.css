@@ -1,15 +1,24 @@
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
+/* 세로가 낮은 화면(노트북 + 윈도우 배율 125~150%)용: short:클래스 */
+@custom-variant short (@media (max-height: 760px));
 
 @theme {
-  --font-sans: "Noto Sans KR", "Noto Sans Myanmar", system-ui, sans-serif;
-  --color-brand: #2647B8;
-  --color-brand-dark: #1B3489;
-  --color-brand-soft: #EEF2FD;
+  --font-sans: "Pretendard Variable", Pretendard, "Noto Sans KR", "Noto Sans Myanmar", system-ui, sans-serif;
+
+  /* 숙명 블루 계열 (피그마 Color 시트와 같은 값) */
+  --color-brand: #0E3C8C;
+  --color-brand-dark: #0A2D6B;
+  --color-brand-soft: #E8EEFA;
+  --color-surface: #F5F7FB;
+  --color-line: #E5E8EF;
+  --color-ink: #1A1F36;
+  --color-alert: #D93036;
+  --color-alert-soft: #FDECEC;
 }
 
 body {
   margin: 0;
-  background: #F6F7F9;
-  color: #111827;
+  background: var(--color-surface);
+  color: var(--color-ink);
 }
